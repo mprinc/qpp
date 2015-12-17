@@ -38,14 +38,8 @@
     <div class="container-overview">
     
         
-            <div class="description">QPP
-Copyright(c) 2015 Sasha Rudan <mprinc@gmail.com>
-MIT Licensed 
-Promises Augmentation & Patterns library
-
-```js
-var QPP = require('qpp');
-```</div>
+            <div class="description">This module provides different Promise related (implemented with) patterns and sollutions
+This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module</a> (please check also the @see <a href="https://github.com/kriskowal/q%20"> q github</a>)</div>
         
 
         
@@ -94,7 +88,7 @@ var QPP = require('qpp');
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1">line 1</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -127,6 +121,12 @@ var QPP = require('qpp');
     
 
     
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:q</li>
+        </ul>
+    
 
     
 
@@ -144,7 +144,7 @@ var QPP = require('qpp');
 
     
 
-    <h4 class="name" id="~mapBandwith-Bandwithlimitediteration"><span class="type-signature">(inner) </span>mapBandwith - Bandwith limited iteration<span class="signature">(options, iterator<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="~mapBandwith-Bandwithlimitediteration"><span class="type-signature">(inner) </span>mapBandwith - Bandwith limited iteration<span class="signature">(options, iterator<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -229,6 +229,8 @@ var QPP = require('qpp');
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -254,10 +256,80 @@ var QPP = require('qpp');
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">The name of the iterator</td>
+            <td class="description last">the name of the iterator</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>processingData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;*></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">an array that has to be processed. For each element of array the options.processingFunction will be invited to process it</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>processingFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">processingFunctionCallback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">function that is called for processing data</td>
         </tr>
 
     
@@ -270,17 +342,153 @@ var QPP = require('qpp');
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">the object/context in which processing function will be called</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>processingArguments</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;*></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limitConcurrentlyNum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(integer)</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the number of concurrently processing array elements (calls to the options.processingFunction)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limitPerSecond</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(integer)</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the maximum number array elements to process per second</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>debug</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">defines if debugging messages should be shown during mapBandwith processing</td>
         </tr>
 
     
@@ -326,7 +534,7 @@ var QPP = require('qpp');
                 </td>
             
 
-            <td class="description last">iterator</td>
+            <td class="description last">iterator that keeps information of the iteration status and options</td>
         </tr>
 
     
@@ -367,7 +575,7 @@ var QPP = require('qpp');
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line210">line 210</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line407">line 407</a>
     </li></ul></dd>
     
 
@@ -393,6 +601,10 @@ var QPP = require('qpp');
 <h5>Returns:</h5>
 
         
+<div class="param-desc">
+    iterator that keeps information of the iteration status and options
+</div>
+
 
 
 <dl>
@@ -401,7 +613,7 @@ var QPP = require('qpp');
     </dt>
     <dd>
         
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
     </dd>
@@ -415,6 +627,402 @@ var QPP = require('qpp');
     
 
     
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    <h4 class="name" id="~processingFunctionCallback"><span class="type-signature"></span>processingFunctionCallback<span class="signature">(dataElement, index, &hellip;processingArgs<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwith, etc)
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dataElement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">data element to be processed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(index)</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">index of the processing element in the array</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>processingArgs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">additional arguments passed with options.processingArguments</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">processingFunctionFinishedCallback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">callback from the processing function back, when the processing is finished</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line390">line 390</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    promise that will get realized after function  is available
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="~processingFunctionFinishedCallback"><span class="type-signature"></span>processingFunctionFinishedCallback<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    This is a type (a signature) of a processing function callback, called back from the processing function processingFunctionCallback. Processing function calls the iterator (mapBandwith etc) when it finishes processing the processing element.
+Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(index)</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">index of the processing element in the array that has been processed @see processingFunctionCallback</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line400">line 400</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
 
     
 </article>
@@ -427,13 +1035,13 @@ var QPP = require('qpp');
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-qpp.html">qpp</a></li></ul><h3>Classes</h3><ul><li><a href="qpp.Semaphore.html">Semaphore</a></li><li><a href="qpp.SemaphoreMultiReservation.html">SemaphoreMultiReservation</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-qpp.html">qpp</a></li></ul><h3>Externals</h3><ul><li><a href="external-Promise.html">Promise</a></li></ul><h3>Classes</h3><ul><li><a href="qpp.Semaphore.html">Semaphore</a></li><li><a href="qpp.SemaphoreMultiReservation.html">SemaphoreMultiReservation</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Dec 16 2015 09:11:05 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 04:33:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

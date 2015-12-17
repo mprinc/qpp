@@ -30,6 +30,11 @@
     
         <h2>Semaphore</h2>
         
+            <div class="class-description">This is a class that provides promises enabled semaphores. 
+It is possible to create a semaphore with a name (merely fore debugging purposes) 
+and speciffic number of resources that we can wait for to get available, 
+and release them when we do not need them anymore</div>
+        
     
 </header>
 
@@ -39,15 +44,17 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="name" id="Semaphore"><span class="type-signature"></span>new Semaphore<span class="signature">(name<span class="signature-attributes">opt</span>, resourcesNo<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Semaphore"><span class="type-signature"></span>new Semaphore<span class="signature">(name<span class="signature-attributes">opt</span>, resourcesNo<span class="signature-attributes">opt</span>, debug<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
 
 
 <div class="description">
-    Constructor function.
+    Constructor function. Creates a new semaphore with optional name and resources number
 </div>
 
 
@@ -132,7 +139,7 @@
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">number(integer)</span>
 
 
             
@@ -153,12 +160,51 @@
             
                 <td class="default">
                 
-                    "1"
+                    1
                 
                 </td>
             
 
             <td class="description last">The total numer of resources available</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>debug</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Defines if debugging messages should be shown during Semaphore operations</td>
         </tr>
 
     
@@ -199,7 +245,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line27">line 27</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -224,6 +270,38 @@
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Example of two consumers
+var QPP = require('qpp');
+var s = new QPP.Semaphore('toilet', 5);
+
+// consumer 1, wait for some random time, to provide random decission on
+// which consumer will allocate semaphore first`
+setTimeout(function(){
+	s.wait() // allocating the resource (toilet)
+	.then(function(){ // resource is available, consuming resource
+		console.log("Consumer 1: Yes! The toilet is freee! I am the next one!");
+		setTimeout(function(){
+			console.log("Consumer 1: Ah, life is much better place now!")
+			s.signal(); // releasing resource (toilet)
+		}, parseInt(Math.random()*1500)+1);
+	});
+}, parseInt(Math.random()*100)+1);
+
+setTimeout(function(){ // consumer 2
+	s.wait() // allocating the resource (toilet)
+	.then(function(){ // resource is available, consuming resource
+		console.log("Consumer 2: Rather a great news! Restroom is available for me!");
+		setTimeout(function(){
+			console.log("Consumer 2: It is a lovely day outside!")
+			s.signal(); // releasing resource (toilet)
+		}, parseInt(Math.random()*100)+1);
+	});
+}, parseInt(Math.random()*100)+1);
+// For more examples, please check unit tests at @see qpp.mapBandwith</code></pre>
+
+
 
     
     </div>
@@ -239,6 +317,226 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="debug"><span class="type-signature"></span>#debug<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    defines if debugging messages should be shown during Semaphore operations
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line114">line 114</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="name"><span class="type-signature"></span>#name<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    name of the semaphore
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line90">line 90</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="resourcesNo"><span class="type-signature"></span>#resourcesNo<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    currently available number of resources
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line102">line 102</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -248,7 +546,7 @@
 
     
 
-    <h4 class="name" id="signal"><span class="type-signature"></span>signal<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="signal"><span class="type-signature"></span>signal<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -299,7 +597,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line85">line 85</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line166">line 166</a>
     </li></ul></dd>
     
 
@@ -322,28 +620,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    promise that will get realized after the semaphore is available
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -352,7 +628,7 @@
 
     
 
-    <h4 class="name" id="wait"><span class="type-signature"></span>wait<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="wait"><span class="type-signature"></span>wait<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="external-Promise.html">external:Promise</a>}</span></h4>
 
     
 
@@ -403,7 +679,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line42">line 42</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -430,7 +706,9 @@
 
         
 <div class="param-desc">
-    promise that will get realized after the semaphore is available
+    promise that will get resolved after the semaphore is available.
+The only possibility for promise to get rejected is when semaphore gets destroyed
+In that case it will get rejected with an @see Error.
 </div>
 
 
@@ -441,7 +719,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Promise</span>
+<span class="param-type"><a href="external-Promise.html">external:Promise</a></span>
 
 
     </dd>
@@ -467,13 +745,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-qpp.html">qpp</a></li></ul><h3>Classes</h3><ul><li><a href="qpp.Semaphore.html">Semaphore</a></li><li><a href="qpp.SemaphoreMultiReservation.html">SemaphoreMultiReservation</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-qpp.html">qpp</a></li></ul><h3>Externals</h3><ul><li><a href="external-Promise.html">Promise</a></li></ul><h3>Classes</h3><ul><li><a href="qpp.Semaphore.html">Semaphore</a></li><li><a href="qpp.SemaphoreMultiReservation.html">SemaphoreMultiReservation</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Dec 16 2015 09:11:05 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 04:33:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
