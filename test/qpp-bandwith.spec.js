@@ -58,7 +58,7 @@ describe('Qpp.mapBandwith: ', function() {
 				setTimeout(function(){
 					sum += data;
 					if(debug) console.log("[processingFunction:finishing] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
-					defered.resolve();
+					defered.resolve(index);
 				}, parseInt(Math.random()*100)+1);
 
 				return defered.promise;
@@ -94,7 +94,7 @@ describe('Qpp.mapBandwith: ', function() {
 					if(debug) console.log("[processingFunction:finishing] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
 					expect(index).to.be.a('number');
 					expect(callback).to.be.a('function');
-					callback();
+					callback(index);
 				}, parseInt(Math.random()*100)+1);
 			};
 			options.processingData = [0, 1, 2, 3, 4, 5];
@@ -133,7 +133,7 @@ describe('Qpp.mapBandwith: ', function() {
 				var defered = Q.defer();
 				setTimeout(function(){
 					sum1 += data*pMultiplication + pAddition;
-					defered.resolve();
+					defered.resolve(index);
 				}, parseInt(Math.random()*100)+1);
 
 				return defered.promise;
@@ -147,7 +147,7 @@ describe('Qpp.mapBandwith: ', function() {
 				setTimeout(function(){
 					sum2 += data*pMultiplication - pSubstitution;
 					expect(callback).to.be.a('function');
-					callback();
+					callback(index);
 				}, parseInt(Math.random()*100)+1);
 			};
 			options1.processingData = [0, 1, 2, 3, 4, 5];
@@ -191,7 +191,7 @@ describe('Qpp.mapBandwith: ', function() {
 			var defered = Q.defer();
 			setTimeout(function(){
 				sum += data;
-				defered.resolve();
+				defered.resolve(index);
 			}, 0);
 
 			return defered.promise;

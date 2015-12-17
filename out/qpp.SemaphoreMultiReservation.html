@@ -30,9 +30,9 @@
     
         <h2>SemaphoreMultiReservation</h2>
         
-            <div class="class-description">This is a class that provides promises enabled semaphores.
-It differs from the class Semaphore (@see <a href="qpp.Semaphore.html">qpp.Semaphore</a> ) in a way
-it supports allocation of more than one resource in one wait() call</div>
+            <div class="class-description"><p>This is a class that provides promises enabled semaphores.
+It differs from the class Semaphore (@see <a href="qpp.Semaphore.html"><code>qpp.Semaphore</code></a> ) in a way
+it supports allocation of more than one resource in one wait() call</p></div>
         
     
 </header>
@@ -53,7 +53,7 @@ it supports allocation of more than one resource in one wait() call</div>
 
 
 <div class="description">
-    Constructor function. Creates a new semaphore with optional name and resources number
+    <p>Constructor function. Creates a new semaphore with optional name and resources number</p>
 </div>
 
 
@@ -125,7 +125,7 @@ it supports allocation of more than one resource in one wait() call</div>
                 </td>
             
 
-            <td class="description last">The name of the created semaphore</td>
+            <td class="description last"><p>The name of the created semaphore</p></td>
         </tr>
 
     
@@ -164,7 +164,7 @@ it supports allocation of more than one resource in one wait() call</div>
                 </td>
             
 
-            <td class="description last">The total numer of resources available</td>
+            <td class="description last"><p>The total numer of resources available</p></td>
         </tr>
 
     
@@ -203,7 +203,7 @@ it supports allocation of more than one resource in one wait() call</div>
                 </td>
             
 
-            <td class="description last">Defines if debugging messages should be shown during Semaphore operations</td>
+            <td class="description last"><p>Defines if debugging messages should be shown during Semaphore operations</p></td>
         </tr>
 
     
@@ -242,7 +242,7 @@ it supports allocation of more than one resource in one wait() call</div>
                 </td>
             
 
-            <td class="description last">Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)</td>
+            <td class="description last"><p>Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)</p></td>
         </tr>
 
     
@@ -283,7 +283,7 @@ it supports allocation of more than one resource in one wait() call</div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line191">line 191</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line198">line 198</a>
     </li></ul></dd>
     
 
@@ -388,7 +388,7 @@ setTimeout(function(){
 
 
 <div class="description">
-    defines if debugging messages should be shown during Semaphore operations
+    <p>defines if debugging messages should be shown during Semaphore operations</p>
 </div>
 
 
@@ -436,7 +436,7 @@ setTimeout(function(){
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line298">line 298</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -460,7 +460,7 @@ setTimeout(function(){
 
 
 <div class="description">
-    name of the semaphore
+    <p>name of the semaphore</p>
 </div>
 
 
@@ -508,7 +508,7 @@ setTimeout(function(){
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line260">line 260</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line267">line 267</a>
     </li></ul></dd>
     
 
@@ -532,7 +532,7 @@ setTimeout(function(){
 
 
 <div class="description">
-    currently available number of resources
+    <p>currently available number of resources</p>
 </div>
 
 
@@ -580,7 +580,7 @@ setTimeout(function(){
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line273">line 273</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -604,7 +604,7 @@ setTimeout(function(){
 
 
 <div class="description">
-    defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
+    <p>defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)</p>
 </div>
 
 
@@ -657,7 +657,7 @@ setTimeout(function(){
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line284">line 284</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -677,9 +677,9 @@ setTimeout(function(){
     <pre class="prettyprint"><code>var s = new Semaphore('s', 3);
 var wP1 = s.wait(1); // fine, 2 resources left available
 var wP2 = s.wait(3); // not fine (consumer 1 has to release)
-// wP3 will be fine and resolved if this.waitForMoreDemandingConsumers === false
+// wP3 will be fine and resolved if <code>this.waitForMoreDemandingConsumers</code> === false
 // or not fine and not resolved until consumer 1's resources are released (signaled) 
-// if this.waitForMoreDemandingConsumers === true (default)
+// if <code>this.waitForMoreDemandingConsumers</code> === true (default)
 var wP3 = s.wait(2);</code></pre>
 
 
@@ -702,7 +702,7 @@ var wP3 = s.wait(2);</code></pre>
 
 
 <div class="description">
-    release resources in semaphore
+    <p>release resources in semaphore</p>
 </div>
 
 
@@ -774,7 +774,7 @@ var wP3 = s.wait(2);</code></pre>
                 </td>
             
 
-            <td class="description last">The numer of resources released</td>
+            <td class="description last"><p>The numer of resources released</p></td>
         </tr>
 
     
@@ -815,7 +815,7 @@ var wP3 = s.wait(2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line356">line 356</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line363">line 363</a>
     </li></ul></dd>
     
 
@@ -853,7 +853,7 @@ var wP3 = s.wait(2);</code></pre>
 
 
 <div class="description">
-    waits on semaphore
+    <p>waits on semaphore</p>
 </div>
 
 
@@ -925,7 +925,7 @@ var wP3 = s.wait(2);</code></pre>
                 </td>
             
 
-            <td class="description last">The numer of resources needed</td>
+            <td class="description last"><p>The numer of resources needed</p></td>
         </tr>
 
     
@@ -966,7 +966,7 @@ var wP3 = s.wait(2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line305">line 305</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line312">line 312</a>
     </li></ul></dd>
     
 
@@ -993,9 +993,9 @@ var wP3 = s.wait(2);</code></pre>
 
         
 <div class="param-desc">
-    promise that will get resolved after the semaphore is available/
+    <p>promise that will get resolved after the semaphore is available/
 The only possibility for promise to get rejected is when semaphore gets destroyed
-In that case it will get rejected with an @see Error.
+In that case it will get rejected with an @see <code>Error</code>.</p>
 </div>
 
 
@@ -1038,7 +1038,7 @@ In that case it will get rejected with an @see Error.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 04:33:38 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 15:51:26 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

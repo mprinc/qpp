@@ -38,8 +38,12 @@
     <div class="container-overview">
     
         
-            <div class="description">This module provides different Promise related (implemented with) patterns and sollutions
-This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module</a> (please check also the @see <a href="https://github.com/kriskowal/q%20"> q github</a>)</div>
+            <div class="description"><h2>Info</h2><p>This module provides different Promise related (implemented with) patterns and sollutions
+It contains semaphore implementation for syncing consumers of resources
+(like simultaneous writing in files, etc), and concurrent itterators that are limited 
+by number of parallel execution of iterators (if we want to limit number of parallel acceses
+to webservice, etc).</p>
+<h2>Dependencies</h2><p>This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module</a> (please check also the @see <a href="https://github.com/kriskowal/q%20"> q github</a>)</p></div>
         
 
         
@@ -215,7 +219,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
                 </td>
             
 
-            <td class="description last">Parameters
+            <td class="description last"><p>Parameters</p>
                 <h6>Properties</h6>
                 
 
@@ -267,7 +271,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">the name of the iterator</td>
+            <td class="description last"><p>the name of the iterator</p></td>
         </tr>
 
     
@@ -298,7 +302,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">an array that has to be processed. For each element of array the options.processingFunction will be invited to process it</td>
+            <td class="description last"><p>an array that has to be processed. For each element of array the options.processingFunction will be invited to process it</p></td>
         </tr>
 
     
@@ -329,7 +333,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">function that is called for processing data</td>
+            <td class="description last"><p>function that is called for processing data</p></td>
         </tr>
 
     
@@ -362,7 +366,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">the object/context in which processing function will be called</td>
+            <td class="description last"><p>the object/context in which processing function will be called</p></td>
         </tr>
 
     
@@ -395,7 +399,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters</td>
+            <td class="description last"><p>arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters</p></td>
         </tr>
 
     
@@ -426,7 +430,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">the number of concurrently processing array elements (calls to the options.processingFunction)</td>
+            <td class="description last"><p>the number of concurrently processing array elements (calls to the options.processingFunction)</p></td>
         </tr>
 
     
@@ -457,7 +461,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">the maximum number array elements to process per second</td>
+            <td class="description last"><p>the maximum number array elements to process per second</p></td>
         </tr>
 
     
@@ -488,7 +492,7 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
             
 
-            <td class="description last">defines if debugging messages should be shown during mapBandwith processing</td>
+            <td class="description last"><p>defines if debugging messages should be shown during mapBandwith processing</p></td>
         </tr>
 
     
@@ -534,7 +538,460 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
                 </td>
             
 
-            <td class="description last">iterator that keeps information of the iteration status and options</td>
+            <td class="description last"><p>iterator that keeps information of the iteration status and options</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line414">line 414</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>iterator that keeps information of the iteration status and options</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var Q = require('q');
+var QPP = require('./..');
+
+var iterator = {};
+var sum = 0;
+var processingFunction = function(data, index){
+	console.log("[processingFunction:starting] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
+	// test for the limit of concurrently running functions
+	var defered = Q.defer();
+	setTimeout(function(){
+		sum += data;
+		console.log("[processingFunction:finishing] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
+		defered.resolve();
+	}, parseInt(Math.random()*100)+1);
+
+	return defered.promise;
+};
+
+var options = {};
+options.processingData = [0, 1, 2, 3, 4, 5];
+options.limitConcurrentlyNum = 3;
+options.processingFunction = processingFunction;
+iterator = QPP.mapBandwith(options, iterator);
+
+var promise = iterator.$promise;
+
+promise.then(function(processedNo){
+	console.log("Done: processed: %d, sum: %d", processedNo, sum);
+});</code></pre>
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    <h4 class="name" id="~processingFunctionCallback"><span class="type-signature"></span>processingFunctionCallback<span class="signature">(dataElement, index, &hellip;processingArgs<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwith, etc)</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dataElement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>data element to be processed</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(index)</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>index of the processing element in the array</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>processingArgs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>additional arguments passed with options.processingArguments</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">processingFunctionFinishedCallback</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>callback from the processing function back, when the processing is finished</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line397">line 397</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>promise that will get realized after function  is available</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="~processingFunctionFinishedCallback"><span class="type-signature"></span>processingFunctionFinishedCallback<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>This is a type (a signature) of a processing function callback, called back from the processing function <code>processingFunctionCallback</code>. Processing function calls the iterator (mapBandwith etc) when it finishes processing the processing element.
+Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(index)</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>index of the processing element in the array that has been processed @see <code>processingFunctionCallback</code></p></td>
         </tr>
 
     
@@ -598,426 +1055,6 @@ This module requires <a href="https://www.npmjs.com/package/q%20"> q npm module<
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    iterator that keeps information of the iteration status and options
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-    
-
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        
-                
-
-    
-
-    <h4 class="name" id="~processingFunctionCallback"><span class="type-signature"></span>processingFunctionCallback<span class="signature">(dataElement, index, &hellip;processingArgs<span class="signature-attributes">opt</span>, callback)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
-
-    
-
-
-
-<div class="description">
-    This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwith, etc)
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>dataElement</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">data element to be processed</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number(index)</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">index of the processing element in the array</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>processingArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
-            
-
-            
-
-            <td class="description last">additional arguments passed with options.processingArguments</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">processingFunctionFinishedCallback</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">callback from the processing function back, when the processing is finished</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line390">line 390</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    promise that will get realized after function  is available
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">Promise</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-            
-                
-
-    
-
-    <h4 class="name" id="~processingFunctionFinishedCallback"><span class="type-signature"></span>processingFunctionFinishedCallback<span class="signature">(index)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    This is a type (a signature) of a processing function callback, called back from the processing function processingFunctionCallback. Processing function calls the iterator (mapBandwith etc) when it finishes processing the processing element.
-Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number(index)</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">index of the processing element in the array that has been processed @see processingFunctionCallback</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line400">line 400</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1041,7 +1078,7 @@ Note: the more preferred way is that function returns a promise and communicate 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 04:33:38 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu Dec 17 2015 15:51:26 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
