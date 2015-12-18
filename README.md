@@ -9,15 +9,17 @@ Promises Augmentation &amp; Patterns
 
 # Features
 
-* Support for limiting a bandwith of executing a set of function
-	* by the number of cuncurrent running functions
-	* by the number of functions running at particular time period
+* Support for limiting a bandwidth of executing a set of function
+	* by the number of concurrent running functions
+	* (TODO) by the number of functions running at particular time period
 
 * Support for parallelism
 	* Semaphores
+		* single resource allocation
+		* multiple resources allocation
 
 # Plans to add (please create new issue to ask for it)
-* Time bandwith
+* Time bandwidth
 * Semaphore hashes
 
 # Usage
@@ -27,7 +29,7 @@ Promises Augmentation &amp; Patterns
 var QPP = require('./..');
 var s = new QPP.Semaphore('airstrip', 1);
 
-// airplane (consumer) 1, waits for passangers to board
+// airplane (consumer) 1, waits for passengers to board
 setTimeout(function(){
 	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
@@ -53,7 +55,7 @@ setTimeout(function(){ // airplane (consumer) 2
 // For more examples, please check unit tests at @see qpp.Semaphore
 ```
 
-Plese check [documentation](http://mprinc.github.io/qpp/ "QPP Documentation") for detailed documentation and basic examples.
+Please check [documentation](http://mprinc.github.io/qpp/ "QPP Documentation") for detailed documentation and basic examples.
 
 For more detailed and complex examples, please check the ***test*** folder in the repository
 

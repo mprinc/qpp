@@ -20,7 +20,7 @@ var options = {};
 options.processingData = [0, 1, 2, 3, 4, 5];
 options.limitConcurrentlyNum = 3;
 options.processingFunction = processingFunction;
-iterator = QPP.mapBandwith(options, iterator);
+iterator = QPP.mapBandwidth(options, iterator);
 
 var promise = iterator.$promise;
 
@@ -28,4 +28,4 @@ promise.then(function(processedNo){
 	console.log("Done: processed: %d, sum: %d", processedNo, sum);
 });
 
-// For more examples, please check unit tests at @see qpp.mapBandwith
+// For more examples, please check unit tests at @see qpp.mapBandwidth

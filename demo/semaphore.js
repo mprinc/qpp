@@ -2,7 +2,7 @@
 var QPP = require('./..');
 var s = new QPP.Semaphore('airstrip', 1);
 
-// airplane (consumer) 1, waits for passangers to board
+// airplane (consumer) 1, waits for passengers to board
 setTimeout(function(){
 	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
@@ -19,7 +19,7 @@ setTimeout(function(){ // airplane (consumer) 2
 	.then(function(){ // resource is available, consuming resource
 		console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
 		setTimeout(function(){
-			console.log("Pilot 2: Dear passangers, enjoy our flight!")
+			console.log("Pilot 2: Dear passengers, enjoy our flight!")
 			s.signal(); // releasing resource (airstrip)
 		}, parseInt(Math.random()*2000)+1);
 	});
