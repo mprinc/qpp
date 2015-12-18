@@ -281,7 +281,7 @@ QPP.SemaphoreMultiReservation = (function() {
 	* // Because both group 1 and 3 ended up at the top of the towe simultaneously
 	* // (there were enough of resources to allocate for both (2+3&lt;=5))
 	* // 
-	* // For more examples, please check unit tests at @see qpp.mapBandwith	
+	* // For more examples, please check unit tests at @see qpp.mapBandwidth	
 	*
 	* @memberof qpp
 	* @exports qpp.Semaphore
@@ -423,7 +423,7 @@ QPP.SemaphoreMultiReservation = (function() {
 })();
 
 /**
-* This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwith, etc)
+* This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwidth, etc)
 * @callback processingFunctionCallback
 * @param {*} dataElement - data element to be processed
 * @param {number(index)} index - index of the processing element in the array
@@ -433,7 +433,7 @@ QPP.SemaphoreMultiReservation = (function() {
 */
 
 /**
-* This is a type (a signature) of a processing function callback, called back from the processing function {@link processingFunctionCallback}. Processing function calls the iterator (mapBandwith etc) when it finishes processing the processing element.
+* This is a type (a signature) of a processing function callback, called back from the processing function {@link processingFunctionCallback}. Processing function calls the iterator (mapBandwidth etc) when it finishes processing the processing element.
 * Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback
 * @callback processingFunctionFinishedCallback  @see {@link processingFunctionCallback}
 * @param {number(index)} index - index of the processing element in the array that has been processed @see {@link processingFunctionCallback}
@@ -463,7 +463,7 @@ QPP.SemaphoreMultiReservation = (function() {
 * options.processingData = [0, 1, 2, 3, 4, 5];
 * options.limitConcurrentlyNum = 3;
 * options.processingFunction = processingFunction;
-* iterator = QPP.mapBandwith(options, iterator);
+* iterator = QPP.mapBandwidth(options, iterator);
 * 
 * var promise = iterator.$promise;
 * 
@@ -471,8 +471,8 @@ QPP.SemaphoreMultiReservation = (function() {
 * 	console.log("Done: processed: %d, sum: %d", processedNo, sum);
 * });
 *
-* @exports qpp.mapBandwith
-* @function mapBandwith - Bandwith limited iteration
+* @exports qpp.mapBandwidth
+* @function mapBandwidth - Bandwidth limited iteration
 
 * @param {Object} options - Parameters
 * @param {string} options.name - the name of the iterator
@@ -482,17 +482,17 @@ QPP.SemaphoreMultiReservation = (function() {
 * @param {Array.&lt;*>} [options.processingArguments] - arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters
 * @param {number(integer)} options.limitConcurrentlyNum - the number of concurrently processing array elements (calls to the options.processingFunction)
 * @param {number(integer)} options.limitPerSecond - the maximum number array elements to process per second
-* @param {boolean} options.debug - defines if debugging messages should be shown during mapBandwith processing
+* @param {boolean} options.debug - defines if debugging messages should be shown during mapBandwidth processing
 
 * @param {Object} [iterator={}] iterator that keeps information of the iteration status and options
 * @return {Object} iterator that keeps information of the iteration status and options
 */
-QPP.mapBandwith = function(options, iterator){
+QPP.mapBandwidth = function(options, iterator){
 	iterator = iterator || {};
 	var deferred = Q.defer();
 	iterator.$promise = deferred.promise;
 	if(typeof options == 'undefined'){
-		deferred.reject(new Error("[MapBandwith] Missing options"));
+		deferred.reject(new Error("[MapBandwidth] Missing options"));
 		return iterator;
 	}
 
@@ -506,12 +506,12 @@ QPP.mapBandwith = function(options, iterator){
 	iterator.debug = typeof options.debug !== 'undefined' ? options.debug : false;
 
 	if(typeof options.processingFunction === 'undefined'){
-		deferred.reject(new Error("[MapBandwith:"+iterator.name+"] Missing processingFunction"));
+		deferred.reject(new Error("[MapBandwidth:"+iterator.name+"] Missing processingFunction"));
 		return iterator;
 	}
 
 	if(typeof options.processingData === 'undefined'){
-		deferred.reject(new Error("[MapBandwith:"+iterator.name+"] Missing processingData"));
+		deferred.reject(new Error("[MapBandwidth:"+iterator.name+"] Missing processingData"));
 		return iterator;
 	}
 
@@ -533,7 +533,7 @@ QPP.mapBandwith = function(options, iterator){
 				// http://stackoverflow.com/questions/1374126/how-to-extend-an-existing-javascript-array-with-another-array
 				procArguments.push.apply(procArguments, options.processingArguments);
 				procArguments.push(processingFunctionFinished);
-				if(iterator.debug) console.log("[MapBandwith:"+iterator.name+"] iterator.processingIterator: %d, procArguments:%s", iterator.processingIterator, JSON.stringify(procArguments));
+				if(iterator.debug) console.log("[MapBandwidth:"+iterator.name+"] iterator.processingIterator: %d, procArguments:%s", iterator.processingIterator, JSON.stringify(procArguments));
 
 				var promise = iterator.processingFunction.apply(iterator.thisObj || this, procArguments);
 			}else{
@@ -557,11 +557,11 @@ QPP.mapBandwith = function(options, iterator){
 	return iterator;
 };
 
-QPP.mapBandwithDataList = function(processingFunction, processingData){
+QPP.mapBandwidthDataList = function(processingFunction, processingData){
 
 };
 
-QPP.mapBandwithArgumentsList = function(processingFunction, processingData){
+QPP.mapBandwidthArgumentsList = function(processingFunction, processingData){
 
 };
 
@@ -586,7 +586,7 @@ module.exports = (function() {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Dec 18 2015 01:03:18 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri Dec 18 2015 01:17:09 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
