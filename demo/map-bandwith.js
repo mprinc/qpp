@@ -27,3 +27,5 @@ var promise = iterator.$promise;
 promise.then(function(processedNo){
 	console.log("Done: processed: %d, sum: %d", processedNo, sum);
 });
+
+// For more examples, please check unit tests at @see qpp.mapBandwith

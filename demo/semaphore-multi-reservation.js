@@ -48,4 +48,4 @@ setTimeout(function(){
 // Because both group 1 and 3 ended up at the top of the towe simultaneously
 // (there were enough of resources to allocate for both (2+3<=5))
 // 
-// For more examples, please check unit tests at @see qpp.mapBandwith
+// For more examples, please check unit tests at @see qpp.SemaphoreMultiReservation

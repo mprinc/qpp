@@ -1,28 +1,28 @@
 // Example of two consumers
 var QPP = require('./..');
-var s = new QPP.Semaphore('toilet', 1);
+var s = new QPP.Semaphore('airstrip', 1);
 
-// consumer 1, wait for some random time, to provide random decission on
-// which consumer will allocate semaphore first`
+// airplane (consumer) 1, waits for passangers to board
 setTimeout(function(){
-	s.wait() // allocating the resource (toilet)
+	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
-		console.log("Consumer 1: Yes! The toilet is freee! I am the next one!");
+		console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
 		setTimeout(function(){
-			console.log("Consumer 1: Ah, life is much better place now!")
-			s.signal(); // releasing resource (toilet)
+			console.log("Pilot 1: Ah, view is much better here!")
+			s.signal(); // releasing resource (airstrip)
 		}, parseInt(Math.random()*1500)+1);
 	});
 }, parseInt(Math.random()*1500)+1);
 
-setTimeout(function(){ // consumer 2
-	s.wait() // allocating the resource (toilet)
+setTimeout(function(){ // airplane (consumer) 2
+	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
-		console.log("Consumer 2: Rather a great news! Restroom is available for me!");
+		console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
 		setTimeout(function(){
-			console.log("Consumer 2: It is a lovely day outside!")
-			s.signal(); // releasing resource (toilet)
+			console.log("Pilot 2: Dear passangers, enjoy our flight!")
+			s.signal(); // releasing resource (airstrip)
 		}, parseInt(Math.random()*2000)+1);
 	});
 }, parseInt(Math.random()*1500)+1);
-// For more examples, please check unit tests at @see qpp.mapBandwith
+
+// For more examples, please check unit tests at @see qpp.Semaphore
