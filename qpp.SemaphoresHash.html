@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>QPP (Promises Augmentation & Patterns) Class: SemaphoreMultiReservation</title>
+	<title>QPP (Promises Augmentation & Patterns) Class: SemaphoresHash</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -76,18 +76,18 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: SemaphoreMultiReservation</h1>
+	<h1 class="page-title">Class: SemaphoresHash</h1>
 <section>
 
 <header>
     
         <h2>
-        SemaphoreMultiReservation
+        SemaphoresHash
         </h2>
         
-            <div class="class-description"><p>This is a class that provides promises enabled semaphores.
-It differs from the class Semaphore (@see <a href="qpp.Semaphore.html"><code>qpp.Semaphore</code></a> ) in a way
-it supports allocation of more than one resource in one wait() call</p></div>
+            <div class="class-description"><p>This is a class that provides promises enabled SemaphoresHashes.
+It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
+and release them when we do not need them anymore</p></div>
         
     
 </header>
@@ -99,7 +99,7 @@ it supports allocation of more than one resource in one wait() call</p></div>
         
 <hr>
 <dt>
-    <h4 class="name" id="SemaphoreMultiReservation"><span class="type-signature"></span>new SemaphoreMultiReservation(<span class="optional">name</span>, <span class="optional">resourcesNo</span>, <span class="optional">debug</span>, <span class="optional">waitForMoreDemandingConsumers</span>)</h4>
+    <h4 class="name" id="SemaphoresHash"><span class="type-signature"></span>new SemaphoresHash(<span class="optional">name</span>, <span class="optional">resourcesNo</span>, <span class="optional">debug</span>)</h4>
     
     
 </dt>
@@ -107,7 +107,7 @@ it supports allocation of more than one resource in one wait() call</p></div>
 
     
     <div class="description">
-        <p>Constructor function. Creates a new semaphore with optional name and resources number</p>
+        <p>Constructor function. Creates a new SemaphoresHash with optional and resources number</p>
     </div>
     
 
@@ -174,12 +174,12 @@ it supports allocation of more than one resource in one wait() call</p></div>
             
                 <td class="default">
                 
-                    "semaphore"
+                    "SemaphoresHash"
                 
                 </td>
             
 
-            <td class="description last"><p>The name of the created semaphore</p></td>
+            <td class="description last"><p>The name of the created SemaphoresHash</p></td>
         </tr>
 
     
@@ -259,47 +259,7 @@ it supports allocation of more than one resource in one wait() call</p></div>
                 </td>
             
 
-            <td class="description last"><p>Defines if debugging messages should be shown during Semaphore operations</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitForMoreDemandingConsumers</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last"><p>Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)</p></td>
+            <td class="description last"><p>Defines if debugging messages should be shown during SemaphoresHash operations</p></td>
         </tr>
 
     
@@ -344,7 +304,7 @@ it supports allocation of more than one resource in one wait() call</p></div>
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-198">line 198</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-401">line 401</a>
 			</li>
 		</ul>
 	</dd>
@@ -373,57 +333,33 @@ it supports allocation of more than one resource in one wait() call</p></div>
     
         <h5>Example</h5>
         
-    <pre class="sunlight-highlight-javascript">// Example of 3 groups
-var QPP = require(&#x27;qpp&#x27;);
-var s = new QPP.SemaphoreMultiReservation(&#x27;Nebojsa tower&#x27;, 5);
+    <pre class="sunlight-highlight-javascript">// Example of two consumers
+var QPP = require(&#x27;./..&#x27;);
+var s = new QPP.SemaphoresHash(1);
 
-// group 1
+// airplane (consumer) 1, waits for passangers to board
 setTimeout(function(){
-	s.wait(3) // 3 people
+	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 1: Let&#x27;s run to the top!&quot;);
+		console.log(&quot;Pilot 1: Yes! The airstrip is freee! We are the next one!&quot;);
 		setTimeout(function(){
-			console.log(&quot;Group 1: Great experience, but they ask us to leave!&quot;)
-			s.signal(3); // releasing resource (toilet)
+			console.log(&quot;Pilot 1: Ah, view is much better here!&quot;)
+			s.signal(); // releasing resource (airstrip)
 		}, parseInt(Math.random()*1500)+1);
 	});
-}, parseInt(Math.random()*100)+1);
-
-// group 2
-setTimeout(function(){
-	s.wait(4) // 4 people
+}, parseInt(Math.random()*1500)+1);
+setTimeout(function(){ // airplane (consumer) 2
+	s.wait() // allocating the resource (airstrip)
 	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 2: Tower is available for us!&quot;);
+		console.log(&quot;Pilot 2: Great we are ready to departure, no one on the airstrip!&quot;);
 		setTimeout(function(){
-			console.log(&quot;Group 2: Let&#x27;s give the space for others!&quot;)
-			s.signal(4); // releasing resource (toilet)
-		}, parseInt(Math.random()*500)+1);
+			console.log(&quot;Pilot 2: Dear passangers, enjoy our flight!&quot;)
+			s.signal(); // releasing resource (airstrip)
+		}, parseInt(Math.random()*2000)+1);
 	});
-}, parseInt(Math.random()*100)+1);
+}, parseInt(Math.random()*1500)+1);
 
-// group 3
-setTimeout(function(){
-	s.wait(2) // 2 people
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 3: Hey, i have to show you the view!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Group 3: Ah, we could stay here forever!&quot;)
-			s.signal(2); // releasing resource (toilet)
-		}, parseInt(Math.random()*100)+1);
-	});
-}, parseInt(Math.random()*100)+1);
-
-// This is the most interesting scenario:
-//		Group 2: Tower is available for us
-//		Group 2: Let&#x27;s give the space for others
-//		Group 3: Hey, i have to show you the view
-//		Group 1: Let&#x27;s run to the top
-//		Group 3: Ah, we could stay here forever
-//		Group 1: Great experience, but they ask us to leave!
-// Because both group 1 and 3 ended up at the top of the towe simultaneously
-// (there were enough of resources to allocate for both (2+3&lt;=5))
-// 
-// For more examples, please check unit tests at @see qpp.mapBandwidth	</pre>
+// For more examples, please check unit tests at @see qpp.SemaphoresHash</pre>
 
 
     
@@ -456,7 +392,7 @@ setTimeout(function(){
 <dd>
     
     <div class="description">
-        <p>defines if debugging messages should be shown during Semaphore operations</p>
+        <p>defines if debugging messages should be shown during SemaphoresHash operations</p>
     </div>
     
 
@@ -509,7 +445,7 @@ setTimeout(function(){
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-305">line 305</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-460">line 460</a>
 			</li>
 		</ul>
 	</dd>
@@ -529,15 +465,15 @@ setTimeout(function(){
         
             
 <hr>
-<dt class="name" id="name">
-    <h4><span class="type-signature"></span>#name<span class="type-signature"> :string</span></h4>
+<dt class="name" id="semaphores">
+    <h4><span class="type-signature"></span>#semaphores<span class="type-signature"> :Array.&lt;string, QPP.Semaphore></span></h4>
 
     
 </dt>
 <dd>
     
     <div class="description">
-        <p>name of the semaphore</p>
+        <p>array hash of semaphores</p>
     </div>
     
 
@@ -546,7 +482,7 @@ setTimeout(function(){
         <ul>
             <li>
                 
-<span class="param-type">string</span>
+<span class="param-type">Array.&lt;string, QPP.Semaphore></span>
 
 
 
@@ -590,7 +526,7 @@ setTimeout(function(){
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-267">line 267</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-448">line 448</a>
 			</li>
 		</ul>
 	</dd>
@@ -602,187 +538,6 @@ setTimeout(function(){
 
 	
 </dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="resourcesNo">
-    <h4><span class="type-signature"></span>#resourcesNo<span class="type-signature"> :string</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>currently available number of resources</p>
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">string</span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-280">line 280</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="waitForMoreDemandingConsumers">
-    <h4><span class="type-signature"></span>#waitForMoreDemandingConsumers<span class="type-signature"> :boolean</span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        <p>defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)</p>
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">boolean</span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
-	<dd class="tag-default">
-		<ul class="dummy">
-			<li>true</li>
-		</ul>
-	</dd>
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-291">line 291</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">var s = new Semaphore(&#x27;s&#x27;, 3);
-var wP1 = s.wait(1); // fine, 2 resources left available
-var wP2 = s.wait(3); // not fine (consumer 1 has to release)
-// wP3 will be fine and resolved if <code>this.waitForMoreDemandingConsumers</code> === false
-// or not fine and not resolved until consumer 1&#x27;s resources are released (signaled) 
-// if <code>this.waitForMoreDemandingConsumers</code> === true (default)
-var wP3 = s.wait(2);</pre>
 
 
     
@@ -798,7 +553,7 @@ var wP3 = s.wait(2);</pre>
             
 <hr>
 <dt>
-    <h4 class="name" id="signal"><span class="type-signature"></span>signal(<span class="optional">resourcesReleased</span>)</h4>
+    <h4 class="name" id="create"><span class="type-signature"></span>create()</h4>
     
     
 </dt>
@@ -806,7 +561,7 @@ var wP3 = s.wait(2);</pre>
 
     
     <div class="description">
-        <p>release resources in semaphore</p>
+        <p>create named semaphore in SemaphoresHash</p>
     </div>
     
 
@@ -815,76 +570,6 @@ var wP3 = s.wait(2);</pre>
     
 
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Argument</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>resourcesReleased</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "1"
-                
-                </td>
-            
-
-            <td class="description last"><p>The numer of resources released</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
     
 
     
@@ -923,165 +608,7 @@ var wP3 = s.wait(2);</pre>
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-363">line 363</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="wait"><span class="type-signature"></span>wait(<span class="optional">resourcesNoNeeded</span>)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>waits on semaphore</p>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Argument</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>resourcesNoNeeded</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "1"
-                
-                </td>
-            
-
-            <td class="description last"><p>The numer of resources needed</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-312">line 312</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-467">line 467</a>
 			</li>
 		</ul>
 	</dd>
@@ -1110,8 +637,208 @@ var wP3 = s.wait(2);</pre>
     
             
 <div class="param-desc">
-    <p>promise that will get resolved after the semaphore is available/
-The only possibility for promise to get rejected is when semaphore gets destroyed
+    <p>returns newly created semaphore</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">QPP.Semaphore</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="signal"><span class="type-signature"></span>signal()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>release resources in the named of the SemaphoresHash</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-499">line 499</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="wait"><span class="type-signature"></span>wait()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>waits on SemaphoresHash</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-482">line 482</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>promise that will get resolved after the named semaphore in the SemaphoresHash is available.
+The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
 In that case it will get rejected with an @see <code>Error</code>.</p>
 </div>
 
