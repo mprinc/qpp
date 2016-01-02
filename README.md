@@ -17,10 +17,11 @@ Promises Augmentation &amp; Patterns
 	* Semaphores
 		* single resource allocation
 		* multiple resources allocation
+	* Semaphores hashe
+		* collection of semaphores, each addressed by unique name
 
 # Plans to add (please create new issue to ask for it)
 * Time bandwidth
-* Semaphore hashes
 
 # Usage
 

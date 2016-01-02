@@ -1,6 +1,6 @@
 /**
 * QPP
-* Copyright(c) 2015 Sasha Rudan <mprinc@gmail.com>
+* Copyright(c) 2015-2016 Sasha Rudan <mprinc@gmail.com>
 * MIT Licensed 
 * Promises Augmentation & Patterns library
 *
@@ -392,6 +392,125 @@ QPP.SemaphoreMultiReservation = (function() {
 	}
 
 	return SemaphoreMultiReservation;
+})();
+
+/*
+* @exports qpp.SemaphoresHash
+*/
+QPP.SemaphoresHash = (function() {
+	/**
+	* Constructor function. Creates a new SemaphoresHash with optional and resources number
+	*
+	* @classdesc This is a class that provides promises enabled SemaphoresHashes.
+	* It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
+	* and release them when we do not need them anymore
+	* 
+	* @example
+	* // Example of two consumers
+	* var QPP = require('./..');
+	* var s = new QPP.SemaphoresHash(1);
+	*
+	* // airplane (consumer) 1, waits for passangers to board
+	* setTimeout(function(){
+	* 	s.wait() // allocating the resource (airstrip)
+	* 	.then(function(){ // resource is available, consuming resource
+	* 		console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
+	* 		setTimeout(function(){
+	* 			console.log("Pilot 1: Ah, view is much better here!")
+	* 			s.signal(); // releasing resource (airstrip)
+	* 		}, parseInt(Math.random()*1500)+1);
+	* 	});
+	* }, parseInt(Math.random()*1500)+1);
+
+	* setTimeout(function(){ // airplane (consumer) 2
+	* 	s.wait() // allocating the resource (airstrip)
+	* 	.then(function(){ // resource is available, consuming resource
+	* 		console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
+	* 		setTimeout(function(){
+	* 			console.log("Pilot 2: Dear passangers, enjoy our flight!")
+	* 			s.signal(); // releasing resource (airstrip)
+	* 		}, parseInt(Math.random()*2000)+1);
+	* 	});
+	* }, parseInt(Math.random()*1500)+1);
+	*
+	* // For more examples, please check unit tests at @see qpp.SemaphoresHash
+	*
+	* @memberof qpp
+	* @alias qpp.SemaphoresHash
+	* @exports qpp.SemaphoresHash
+	* @class qpp.SemaphoresHash
+	* @param {string} [name="SemaphoresHash"] - The name of the created SemaphoresHash
+	* @param {number(integer)} [resourcesNo=1] - The total numer of resources available
+	* @param {boolean} [debug=false] - Defines if debugging messages should be shown during SemaphoresHash operations
+	*/
+	var SemaphoresHash = function(resourcesNo, debug){
+		resourcesNo = resourcesNo || 1;
+		/**
+		* @memberof! qpp.SemaphoresHash#
+		* @var {Array.<string,QPP.Semaphore>} semaphores - array hash of semaphores
+		*/
+		this.semaphores = {};
+		/**
+		* @memberof! qpp.SemaphoresHash#
+		* @private
+		* @var {string} initialResources - initial (total) number of resources that SemaphoresHash has
+		*/
+		this.initialResources = resourcesNo;
+
+		/** 
+		* @memberof! qpp.SemaphoresHash#
+		* @var {boolean} debug - defines if debugging messages should be shown during SemaphoresHash operations
+		*/
+		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
+	};
+
+	/**
+	* create named semaphore in SemaphoresHash
+	* @memberof qpp.SemaphoresHash#
+	* @function create
+	* @returns {QPP.Semaphore} returns newly created semaphore
+	*/
+	SemaphoresHash.prototype.create = function(name){
+		if(!(name in this.semaphores)){
+			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+		}else{
+			var semaphore = this.semaphores[name];
+		}
+		return semaphore;
+	};
+
+	/**
+	* waits on SemaphoresHash
+	* @memberof qpp.SemaphoresHash#
+	* @function wait
+	* @returns {external:Promise} promise that will get resolved after the named semaphore in the SemaphoresHash is available.
+	* The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
+	* In that case it will get rejected with an @see {@link Error}.
+	*/
+	SemaphoresHash.prototype.wait = function(name){
+		if(!(name in this.semaphores)){
+			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+		}else{
+			var semaphore = this.semaphores[name];
+		}
+		return semaphore.wait();
+	};
+
+	/**
+	* release resources in the named of the SemaphoresHash
+	* @memberof qpp.SemaphoresHash#
+	* @function signal
+	*/
+	SemaphoresHash.prototype.signal = function(name){
+		if(!(name in this.semaphores)){
+			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+		}else{
+			var semaphore = this.semaphores[name];
+		}
+		return semaphore.signal();
+	}
+
+	return SemaphoresHash;
 })();
 
 /**
