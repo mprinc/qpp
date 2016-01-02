@@ -96,6 +96,67 @@
 
 
 
+    <section class="readme-section">
+        <article><h1>qpp</h1><p>=========</p>
+<p>Promises Augmentation &amp; Patterns</p>
+<h1>Installation</h1><pre class="prettyprint source"><code>npm install qpp --save</code></pre><h1>Features</h1><ul>
+<li><p>Support for limiting a bandwidth of executing a set of function</p>
+<ul>
+<li>by the number of concurrent running functions</li>
+<li>(TODO) by the number of functions running at particular time period</li>
+</ul>
+</li>
+<li><p>Support for parallelism</p>
+<ul>
+<li>Semaphores<ul>
+<li>single resource allocation</li>
+<li>multiple resources allocation</li>
+</ul>
+</li>
+<li>Semaphores hash<ul>
+<li>collection of semaphores, each addressed by unique name</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1>Plans to add (please create new issue to ask for it)</h1><ul>
+<li>Time bandwidth</li>
+</ul>
+<h1>Usage</h1><pre class="prettyprint source"><code>// Example of two consumers
+var QPP = require('./..');
+var s = new QPP.Semaphore('airstrip', 1);
+
+// airplane (consumer) 1, waits for passengers to board
+setTimeout(function(){
+    s.wait() // allocating the resource (airstrip)
+    .then(function(){ // resource is available, consuming resource
+        console.log(&quot;Pilot 1: Yes! The airstrip is freee! We are the next one!&quot;);
+        setTimeout(function(){
+            console.log(&quot;Pilot 1: Ah, view is much better here!&quot;)
+            s.signal(); // releasing resource (airstrip)
+        }, parseInt(Math.random()*1500)+1);
+    });
+}, parseInt(Math.random()*1500)+1);
+
+setTimeout(function(){ // airplane (consumer) 2
+    s.wait() // allocating the resource (airstrip)
+    .then(function(){ // resource is available, consuming resource
+        console.log(&quot;Pilot 2: Great we are ready to departure, no one on the airstrip!&quot;);
+        setTimeout(function(){
+            console.log(&quot;Pilot 2: Dear passangers, enjoy our flight!&quot;)
+            s.signal(); // releasing resource (airstrip)
+        }, parseInt(Math.random()*2000)+1);
+    });
+}, parseInt(Math.random()*1500)+1);
+
+// For more examples, please check unit tests at @see qpp.Semaphore</code></pre><p>Please check <a href="http://mprinc.github.io/qpp/" title="QPP Documentation">documentation</a> for detailed documentation and basic examples.</p>
+<p>For more detailed and complex examples, please check the <strong><em>test</em></strong> folder in the repository</p>
+<h1>Test</h1><pre class="prettyprint source"><code>npm test</code></pre><h1>Release History</h1><ul>
+<li>1.0.0 Initial release</li>
+</ul></article>
+    </section>
+
 
 
 

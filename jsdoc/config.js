@@ -29,7 +29,8 @@
 	},
 	"source": {
 		"include": [
-			"./index.js"
+			"./index.js",
+			"./README.md"
 		],
 		"exclude": [ "../src/js/libs/jquery.js" ],
 		"includePattern": ".+\\.js(doc)?$",
