@@ -1,45 +1,45 @@
 {
-  "name": "qpp",
-  "version": "1.1.2",
-  "description": "Promises Augmentation & Patterns",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
-    "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec test"
+	"name": "qpp",
+	"version": "1.1.3",
+	"description": "Promises Augmentation & Patterns",
+	"main": "index.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "./node_modules/.bin/mocha --reporter spec",
+		"test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec test"
 
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mprinc/qpp"
-  },
-  "keywords": [
-    "promises",
-    "Q",
-    "parallelism",
-    "semaphores",
-    "bandwith",
-    "serialization"
-  ],
-  "author": "Sasha Rudan <mprinc@gmail.com> (https://github.com/mprinc)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mprinc/qpp/issues"
-  },
-  "homepage": "https://github.com/mprinc/qpp",
-  "dependencies": {
-    "q": "^1.4.1"
-  },
-  "devDependencies": {
-    "chai": "^3.4.1",
-    "chai-as-promised": "^5.1.0",
-    "coveralls": "^2.11.6",
-    "ink-docstrap": "^1.1.0",
-    "istanbul": "^0.4.1",
-    "jsdoc": "^3.4.0",
-    "mocha": "^2.3.4",
-    "mocha-lcov-reporter": "^1.0.0"
-  }
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mprinc/qpp"
+	},
+	"keywords": [
+		"promises",
+		"Q",
+		"parallelism",
+		"semaphores",
+		"bandwith",
+		"serialization"
+	],
+	"author": "Sasha Rudan <mprinc@gmail.com> (https://github.com/mprinc)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mprinc/qpp/issues"
+	},
+	"homepage": "https://github.com/mprinc/qpp",
+	"dependencies": {
+		"q": "^1.4.1"
+	},
+	"devDependencies": {
+		"chai": "^3.4.1",
+		"chai-as-promised": "^5.1.0",
+		"coveralls": "^2.11.6",
+		"ink-docstrap": "^1.1.0",
+		"istanbul": "^0.4.1",
+		"jsdoc": "^3.4.0",
+		"mocha": "^2.3.4",
+		"mocha-lcov-reporter": "^1.0.0"
+	}
 }
