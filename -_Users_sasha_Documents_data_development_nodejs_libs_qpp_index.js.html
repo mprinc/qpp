@@ -219,22 +219,21 @@ QPP.Semaphore = (function() {
 	Semaphore.prototype.wait = function(){
 		var deferred = Q.defer();
 		if(this.debug) console.log("[Semaphore:%s:wait] this.resourcesNo:%d", this.name, this.resourcesNo);
-		else{
-			this.resourcesNo--;
-			// enough available resources
-			if(this.resourcesNo>=0){
-				if(this.debug) console.log("[Semaphore:%s:wait] available", this.name);
-				deferred.resolve(this.resourcesNo);
-			// no enough available resources
-			}else{
-				if(this.debug) console.log("[Semaphore:%s:wait] not available", this.name);
-				var that = this;
-				this.waitingQueue.push(function(){
-					if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
-					deferred.resolve(that.resourcesNo);
-				});
-			}			
-		}
+
+		this.resourcesNo--;
+		// enough available resources
+		if(this.resourcesNo>=0){
+			if(this.debug) console.log("[Semaphore:%s:wait] available", this.name);
+			deferred.resolve(this.resourcesNo);
+		// no enough available resources
+		}else{
+			if(this.debug) console.log("[Semaphore:%s:wait] not available", this.name);
+			var that = this;
+			this.waitingQueue.push(function(){
+				if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
+				deferred.resolve(that.resourcesNo);
+			});
+		}			
 		return deferred.promise;
 	};
 
@@ -353,6 +352,7 @@ QPP.SemaphoreMultiReservation = (function() {
 		@var {string} name - name of the semaphore
 		*/
 		this.name = name || "semaphore";
+		resourcesNo = resourcesNo || 1;
 
 		/**
 		@memberof! qpp.SemaphoreMultiReservation#
