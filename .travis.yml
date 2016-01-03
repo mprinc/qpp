@@ -7,5 +7,11 @@ node_js:
   - "0.10"
   - "iojs"
 
-after_success:
-- ./node_modules/.bin/mocha test/**.js -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
+# produce coverage lcov data
+script: "npm run-script test-travis"
+
+# Send coverage data to Coveralls
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+
+# after_success:
+# - ./node_modules/.bin/mocha test/**.js -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js

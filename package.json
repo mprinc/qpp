@@ -7,7 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test-travis": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R spec test"
+
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,7 @@
     "chai-as-promised": "^5.1.0",
     "coveralls": "^2.11.6",
     "ink-docstrap": "^1.1.0",
+    "istanbul": "^0.4.1",
     "jsdoc": "^3.4.0",
     "mocha": "^2.3.4",
     "mocha-lcov-reporter": "^1.0.0"
