@@ -5,7 +5,7 @@
 Promises Augmentation &amp; Patterns
 # qpp [![Build Status](https://travis-ci.org/mprinc/qpp.svg)](https://travis-ci.org/mprinc/qpp)
 
-[![NPM](https://nodei.co/npm/proxyquire.png?downloads=true&stars=true)](https://nodei.co/npm/qpp/)
+[![NPM](https://nodei.co/npm/qpp.png?downloads=true&stars=true)](https://nodei.co/npm/qpp/)
 
 # Installation
 	npm install qpp --save
