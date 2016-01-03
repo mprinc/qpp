@@ -86,8 +86,8 @@
         </h2>
         
             <div class="class-description"><p>This is a class that provides promises enabled SemaphoresHashes.
-It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
-and release them when we do not need them anymore</p></div>
+    It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
+    and release them when we do not need them anymore</p></div>
         
     
 </header>
@@ -334,32 +334,17 @@ and release them when we do not need them anymore</p></div>
         <h5>Example</h5>
         
     <pre class="sunlight-highlight-javascript">// Example of two consumers
-var QPP = require(&#x27;./..&#x27;);
-var s = new QPP.SemaphoresHash(1);
+	var QPP = require(&#x27;./..&#x27;);
+	var s = new QPP.SemaphoresHash();
+	s.create(&#x27;test1&#x27;);
+	s.wait(&#x27;test1&#x27;);
+	s.wait(&#x27;test2&#x27;); // semaphore &#x27;test2&#x27; is implictly created when we try to listen for it (no need for explicit create)
+	s.signal(&#x27;test2&#x27;);
+	s.signal(&#x27;test1&#x27;);
 
-// airplane (consumer) 1, waits for passangers to board
-setTimeout(function(){
-	s.wait() // allocating the resource (airstrip)
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Pilot 1: Yes! The airstrip is freee! We are the next one!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Pilot 1: Ah, view is much better here!&quot;)
-			s.signal(); // releasing resource (airstrip)
-		}, parseInt(Math.random()*1500)+1);
-	});
-}, parseInt(Math.random()*1500)+1);
-setTimeout(function(){ // airplane (consumer) 2
-	s.wait() // allocating the resource (airstrip)
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Pilot 2: Great we are ready to departure, no one on the airstrip!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Pilot 2: Dear passangers, enjoy our flight!&quot;)
-			s.signal(); // releasing resource (airstrip)
-		}, parseInt(Math.random()*2000)+1);
-	});
-}, parseInt(Math.random()*1500)+1);
+	// For more examples, please check demo code and unit tests for @see qpp.SemaphoresHash
 
-// For more examples, please check unit tests at @see qpp.SemaphoresHash</pre>
+	</pre>
 
 
     
@@ -445,7 +430,7 @@ setTimeout(function(){ // airplane (consumer) 2
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-460">line 460</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-442">line 442</a>
 			</li>
 		</ul>
 	</dd>
@@ -526,7 +511,7 @@ setTimeout(function(){ // airplane (consumer) 2
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-448">line 448</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-430">line 430</a>
 			</li>
 		</ul>
 	</dd>
@@ -608,7 +593,7 @@ setTimeout(function(){ // airplane (consumer) 2
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-467">line 467</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-449">line 449</a>
 			</li>
 		</ul>
 	</dd>
@@ -720,7 +705,7 @@ setTimeout(function(){ // airplane (consumer) 2
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-499">line 499</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-483">line 483</a>
 			</li>
 		</ul>
 	</dd>
@@ -808,7 +793,7 @@ setTimeout(function(){ // airplane (consumer) 2
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-482">line 482</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-465">line 465</a>
 			</li>
 		</ul>
 	</dd>
@@ -838,8 +823,8 @@ setTimeout(function(){ // airplane (consumer) 2
             
 <div class="param-desc">
     <p>promise that will get resolved after the named semaphore in the SemaphoresHash is available.
-The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
-In that case it will get rejected with an @see <code>Error</code>.</p>
+    The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
+    In that case it will get rejected with an @see <code>Error</code>.</p>
 </div>
 
 
@@ -918,7 +903,7 @@ Copyright (c) 2015 Sasha Rudan
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on Saturday, January 2nd 2016
+		on Sunday, January 3rd 2016
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

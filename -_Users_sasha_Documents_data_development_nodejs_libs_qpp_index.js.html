@@ -131,90 +131,90 @@ QPP.Semaphore = (function() {
 	// TODO: what is the minimal set of tags to describe Semaphore a class that is exported as a part of QPP module
 
 	/**
-	* Constructor function. Creates a new semaphore with optional name and resources number
-	*
-	* @classdesc This is a class that provides promises enabled semaphores. 
-	* It is possible to create a semaphore with a name (merely fore debugging purposes) 
-	* and speciffic number of resources that we can wait for to get available, 
-	* and release them when we do not need them anymore
-	* 
-	* @example
-	* // Example of two consumers
-	* var QPP = require('./..');
-	* var s = new QPP.Semaphore('airstrip', 1);
-	*
-	* // airplane (consumer) 1, waits for passangers to board
-	* setTimeout(function(){
-	* 	s.wait() // allocating the resource (airstrip)
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
-	* 		setTimeout(function(){
-	* 			console.log("Pilot 1: Ah, view is much better here!")
-	* 			s.signal(); // releasing resource (airstrip)
-	* 		}, parseInt(Math.random()*1500)+1);
-	* 	});
-	* }, parseInt(Math.random()*1500)+1);
+	Constructor function. Creates a new semaphore with optional name and resources number
 
-	* setTimeout(function(){ // airplane (consumer) 2
-	* 	s.wait() // allocating the resource (airstrip)
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
-	* 		setTimeout(function(){
-	* 			console.log("Pilot 2: Dear passangers, enjoy our flight!")
-	* 			s.signal(); // releasing resource (airstrip)
-	* 		}, parseInt(Math.random()*2000)+1);
-	* 	});
-	* }, parseInt(Math.random()*1500)+1);
-	*
-	* // For more examples, please check unit tests at @see qpp.Semaphore
-	*
-	* @memberof qpp
-	* @alias qpp.Semaphore
-	* @exports qpp.Semaphore
-	* @class qpp.Semaphore
-	* @param {string} [name="semaphore"] - The name of the created semaphore
-	* @param {number(integer)} [resourcesNo=1] - The total numer of resources available
-	* @param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
+	@classdesc This is a class that provides promises enabled semaphores. 
+	It is possible to create a semaphore with a name (merely fore debugging purposes) 
+	and speciffic number of resources that we can wait for to get available, 
+	and release them when we do not need them anymore
+	
+	@example
+	// Example of two consumers
+	var QPP = require('./..');
+	var s = new QPP.Semaphore('airstrip', 1);
+
+	// airplane (consumer) 1, waits for passangers to board
+	setTimeout(function(){
+		s.wait() // allocating the resource (airstrip)
+		.then(function(){ // resource is available, consuming resource
+			console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
+			setTimeout(function(){
+				console.log("Pilot 1: Ah, view is much better here!")
+				s.signal(); // releasing resource (airstrip)
+			}, parseInt(Math.random()*1500)+1);
+		});
+	}, parseInt(Math.random()*1500)+1);
+
+	setTimeout(function(){ // airplane (consumer) 2
+		s.wait() // allocating the resource (airstrip)
+		.then(function(){ // resource is available, consuming resource
+			console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
+			setTimeout(function(){
+				console.log("Pilot 2: Dear passangers, enjoy our flight!")
+				s.signal(); // releasing resource (airstrip)
+			}, parseInt(Math.random()*2000)+1);
+		});
+	}, parseInt(Math.random()*1500)+1);
+
+	// For more examples, please check unit tests for @see qpp.Semaphore
+
+	@memberof qpp
+	@alias qpp.Semaphore
+	@exports qpp.Semaphore
+	@class qpp.Semaphore
+	@param {string} [name="semaphore"] - The name of the created semaphore
+	@param {number(integer)} [resourcesNo=1] - The total numer of resources available
+	@param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
 	*/
 	var Semaphore = function(name, resourcesNo, debug){
 		/**
-		* @memberof! qpp.Semaphore#
-		* @var {string} name - name of the semaphore
+		@memberof! qpp.Semaphore#
+		@var {string} name - name of the semaphore
 		*/
 		this.name = name || "semaphore";
 		resourcesNo = resourcesNo || 1;
 		/**
-		* @memberof! qpp.Semaphore#
-		* @private
-		* @var {string} initialResources - initial (total) number of resources that Semaphore has
+		@memberof! qpp.Semaphore#
+		@private
+		@var {string} initialResources - initial (total) number of resources that Semaphore has
 		*/
 		this.initialResources = resourcesNo;
 		/**
-		* @memberof! qpp.Semaphore#
-		* @var {string} resourcesNo - currently available number of resources
+		@memberof! qpp.Semaphore#
+		@var {string} resourcesNo - currently available number of resources
 		*/
 		this.resourcesNo = resourcesNo;
 		/**
-		* @memberof! qpp.Semaphore#
-		* @private
-		* @var {string} waitingQueue - queue holding the list of waiting consumers (functions) for available resources
+		@memberof! qpp.Semaphore#
+		@private
+		@var {string} waitingQueue - queue holding the list of waiting consumers (functions) for available resources
 		*/
 		this.waitingQueue = [];
 
 		/** 
-		* @memberof! qpp.Semaphore#
-		* @var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
+		@memberof! qpp.Semaphore#
+		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
 		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
 	};
 
 	/**
-	* waits on semaphore
-	* @memberof qpp.Semaphore#
-	* @function wait
-	* @returns {external:Promise} promise that will get resolved after the semaphore is available.
-	* The only possibility for promise to get rejected is when semaphore gets destroyed
-	* In that case it will get rejected with an @see {@link Error}.
+	waits on semaphore
+	@memberof qpp.Semaphore#
+	@function wait
+	@returns {external:Promise} promise that will get resolved after the semaphore is available.
+	The only possibility for promise to get rejected is when semaphore gets destroyed
+	In that case it will get rejected with an @see {@link Error}.
 	*/
 	Semaphore.prototype.wait = function(){
 		var deferred = Q.defer();
@@ -254,9 +254,9 @@ QPP.Semaphore = (function() {
 	}
 */
 	/**
-	* release resources in semaphore
-	* @memberof qpp.Semaphore#
-	* @function signal
+	release resources in semaphore
+	@memberof qpp.Semaphore#
+	@function signal
 	*/
 	Semaphore.prototype.signal = function(){
 		if(this.debug) console.log("[Semaphore:%s:signal] this.resourcesNo:%d", this.name, this.resourcesNo);
@@ -279,127 +279,127 @@ QPP.Semaphore = (function() {
 */
 QPP.SemaphoreMultiReservation = (function() {
 	/**
-	* Constructor function. Creates a new semaphore with optional name and resources number
-	*
-	* @classdesc This is a class that provides promises enabled semaphores.
-	* It differs from the class Semaphore (@see {@link qpp.Semaphore} ) in a way
-	* it supports allocation of more than one resource in one wait() call
-	* 
-	* @example
-	* // Example of 3 groups
-	* var QPP = require('qpp');
-	* var s = new QPP.SemaphoreMultiReservation('Nebojsa tower', 5);
-	* 
-	* // group 1
-	* setTimeout(function(){
-	* 	s.wait(3) // 3 people
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Group 1: Let's run to the top!");
-	* 		setTimeout(function(){
-	* 			console.log("Group 1: Great experience, but they ask us to leave!")
-	* 			s.signal(3); // releasing resource (toilet)
-	* 		}, parseInt(Math.random()*1500)+1);
-	* 	});
-	* }, parseInt(Math.random()*100)+1);
-	* 
-	* // group 2
-	* setTimeout(function(){
-	* 	s.wait(4) // 4 people
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Group 2: Tower is available for us!");
-	* 		setTimeout(function(){
-	* 			console.log("Group 2: Let's give the space for others!")
-	* 			s.signal(4); // releasing resource (toilet)
-	* 		}, parseInt(Math.random()*500)+1);
-	* 	});
-	* }, parseInt(Math.random()*100)+1);
-	* 
-	* // group 3
-	* setTimeout(function(){
-	* 	s.wait(2) // 2 people
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Group 3: Hey, i have to show you the view!");
-	* 		setTimeout(function(){
-	* 			console.log("Group 3: Ah, we could stay here forever!")
-	* 			s.signal(2); // releasing resource (toilet)
-	* 		}, parseInt(Math.random()*100)+1);
-	* 	});
-	* }, parseInt(Math.random()*100)+1);
-	* 
-	* // This is the most interesting scenario:
-	* //		Group 2: Tower is available for us
-	* //		Group 2: Let's give the space for others
-	* //		Group 3: Hey, i have to show you the view
-	* //		Group 1: Let's run to the top
-	* //		Group 3: Ah, we could stay here forever
-	* //		Group 1: Great experience, but they ask us to leave!
-	* // Because both group 1 and 3 ended up at the top of the towe simultaneously
-	* // (there were enough of resources to allocate for both (2+3&lt;=5))
-	* // 
-	* // For more examples, please check unit tests at @see qpp.mapBandwidth	
-	*
-	* @memberof qpp
-	* @exports qpp.Semaphore
-	* @class qpp.SemaphoreMultiReservation
-	* @param {string} [name="semaphore"] - The name of the created semaphore
-	* @param {number(integer)} [resourcesNo=1] - The total numer of resources available
-	* @param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
-	* @param {boolean} [waitForMoreDemandingConsumers=true] - Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
+	Constructor function. Creates a new semaphore with optional name and resources number
+
+	@classdesc This is a class that provides promises enabled semaphores.
+	It differs from the class Semaphore (@see {@link qpp.Semaphore} ) in a way
+	it supports allocation of more than one resource in one wait() call
+	
+	@example
+	// Example of 3 groups
+	var QPP = require('qpp');
+	var s = new QPP.SemaphoreMultiReservation('Nebojsa tower', 5);
+	
+	// group 1
+	setTimeout(function(){
+		s.wait(3) // 3 people
+		.then(function(){ // resource is available, consuming resource
+			console.log("Group 1: Let's run to the top!");
+			setTimeout(function(){
+				console.log("Group 1: Great experience, but they ask us to leave!")
+				s.signal(3); // releasing resource (toilet)
+			}, parseInt(Math.random()*1500)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// group 2
+	setTimeout(function(){
+		s.wait(4) // 4 people
+		.then(function(){ // resource is available, consuming resource
+			console.log("Group 2: Tower is available for us!");
+			setTimeout(function(){
+				console.log("Group 2: Let's give the space for others!")
+				s.signal(4); // releasing resource (toilet)
+			}, parseInt(Math.random()*500)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// group 3
+	setTimeout(function(){
+		s.wait(2) // 2 people
+		.then(function(){ // resource is available, consuming resource
+			console.log("Group 3: Hey, i have to show you the view!");
+			setTimeout(function(){
+				console.log("Group 3: Ah, we could stay here forever!")
+				s.signal(2); // releasing resource (toilet)
+			}, parseInt(Math.random()*100)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// This is the most interesting scenario:
+	//		Group 2: Tower is available for us
+	//		Group 2: Let's give the space for others
+	//		Group 3: Hey, i have to show you the view
+	//		Group 1: Let's run to the top
+	//		Group 3: Ah, we could stay here forever
+	//		Group 1: Great experience, but they ask us to leave!
+	// Because both group 1 and 3 ended up at the top of the towe simultaneously
+	// (there were enough of resources to allocate for both (2+3&lt;=5))
+	// 
+	// For more examples, please check unit tests for @see qpp.mapBandwidth	
+
+	@memberof qpp
+	@exports qpp.Semaphore
+	@class qpp.SemaphoreMultiReservation
+	@param {string} [name="semaphore"] - The name of the created semaphore
+	@param {number(integer)} [resourcesNo=1] - The total numer of resources available
+	@param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
+	@param {boolean} [waitForMoreDemandingConsumers=true] - Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
 	*/
 	var SemaphoreMultiReservation = function(name, resourcesNo, waitForMoreDemandingConsumers){
 		/**
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @var {string} name - name of the semaphore
+		@memberof! qpp.SemaphoreMultiReservation#
+		@var {string} name - name of the semaphore
 		*/
 		this.name = name || "semaphore";
 
 		/**
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @private
-		* @var {string} initialResources - initial (total) number of resources that semaphore has
+		@memberof! qpp.SemaphoreMultiReservation#
+		@private
+		@var {string} initialResources - initial (total) number of resources that semaphore has
 		*/
 		this.initialResources = resourcesNo;
 
 		/**
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @var {string} resourcesNo - currently available number of resources
+		@memberof! qpp.SemaphoreMultiReservation#
+		@var {string} resourcesNo - currently available number of resources
 		*/
 		this.resourcesNo = resourcesNo;
 		/**
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @private
-		* @var {string} waitingQueue - queue holding the list of waiting consumers (functions) for available resources
+		@memberof! qpp.SemaphoreMultiReservation#
+		@private
+		@var {string} waitingQueue - queue holding the list of waiting consumers (functions) for available resources
 		*/
 		this.waitingQueue = [];
 		/**
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @var {boolean} waitForMoreDemandingConsumers=true - defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
-		* @example
-		* var s = new Semaphore('s', 3);
-		* var wP1 = s.wait(1); // fine, 2 resources left available
-		* var wP2 = s.wait(3); // not fine (consumer 1 has to release)
-		* // wP3 will be fine and resolved if {@link this.waitForMoreDemandingConsumers} === false
-		* // or not fine and not resolved until consumer 1's resources are released (signaled) 
-		* // if {@link this.waitForMoreDemandingConsumers} === true (default)
-		* var wP3 = s.wait(2);
+		@memberof! qpp.SemaphoreMultiReservation#
+		@var {boolean} waitForMoreDemandingConsumers=true - defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
+		@example
+		var s = new Semaphore('s', 3);
+		var wP1 = s.wait(1); // fine, 2 resources left available
+		var wP2 = s.wait(3); // not fine (consumer 1 has to release)
+		// wP3 will be fine and resolved if {@link this.waitForMoreDemandingConsumers} === false
+		// or not fine and not resolved until consumer 1's resources are released (signaled) 
+		// if {@link this.waitForMoreDemandingConsumers} === true (default)
+		var wP3 = s.wait(2);
 		*/
 		this.waitForMoreDemandingConsumers = typeof waitForMoreDemandingConsumers !== 'undefined' ? waitForMoreDemandingConsumers : true;
 
 		/** 
-		* @memberof! qpp.SemaphoreMultiReservation#
-		* @var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
+		@memberof! qpp.SemaphoreMultiReservation#
+		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
 		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
 	};
 
 	/**
-	* waits on semaphore
-	* @memberof qpp.SemaphoreMultiReservation#
-	* @function wait
-	* @param {number} [resourcesNoNeeded="1"] - The numer of resources needed
-	* @returns {external:Promise} promise that will get resolved after the semaphore is available/
-	* The only possibility for promise to get rejected is when semaphore gets destroyed
-	* In that case it will get rejected with an @see {@link Error}.
+	waits on semaphore
+	@memberof qpp.SemaphoreMultiReservation#
+	@function wait
+	@param {number} [resourcesNoNeeded="1"] - The numer of resources needed
+	@returns {external:Promise} promise that will get resolved after the semaphore is available/
+	The only possibility for promise to get rejected is when semaphore gets destroyed
+	In that case it will get rejected with an @see {@link Error}.
 	*/
 	SemaphoreMultiReservation.prototype.wait = function(resourcesNoNeeded){
 		var deferred = Q.defer();
@@ -444,10 +444,10 @@ QPP.SemaphoreMultiReservation = (function() {
 	}
 */
 	/**
-	* release resources in semaphore
-	* @memberof qpp.SemaphoreMultiReservation#
-	* @function signal
-	* @param {number} [resourcesReleased="1"] - The numer of resources released
+	release resources in semaphore
+	@memberof qpp.SemaphoreMultiReservation#
+	@function signal
+	@param {number} [resourcesReleased="1"] - The numer of resources released
 	*/
 
 	SemaphoreMultiReservation.prototype.signal = function(resourcesReleased){
@@ -482,107 +482,91 @@ QPP.SemaphoreMultiReservation = (function() {
 */
 QPP.SemaphoresHash = (function() {
 	/**
-	* Constructor function. Creates a new SemaphoresHash with optional and resources number
-	*
-	* @classdesc This is a class that provides promises enabled SemaphoresHashes.
-	* It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
-	* and release them when we do not need them anymore
-	* 
-	* @example
-	* // Example of two consumers
-	* var QPP = require('./..');
-	* var s = new QPP.SemaphoresHash(1);
-	*
-	* // airplane (consumer) 1, waits for passangers to board
-	* setTimeout(function(){
-	* 	s.wait() // allocating the resource (airstrip)
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
-	* 		setTimeout(function(){
-	* 			console.log("Pilot 1: Ah, view is much better here!")
-	* 			s.signal(); // releasing resource (airstrip)
-	* 		}, parseInt(Math.random()*1500)+1);
-	* 	});
-	* }, parseInt(Math.random()*1500)+1);
+	Constructor function. Creates a new SemaphoresHash with optional and resources number
 
-	* setTimeout(function(){ // airplane (consumer) 2
-	* 	s.wait() // allocating the resource (airstrip)
-	* 	.then(function(){ // resource is available, consuming resource
-	* 		console.log("Pilot 2: Great we are ready to departure, no one on the airstrip!");
-	* 		setTimeout(function(){
-	* 			console.log("Pilot 2: Dear passangers, enjoy our flight!")
-	* 			s.signal(); // releasing resource (airstrip)
-	* 		}, parseInt(Math.random()*2000)+1);
-	* 	});
-	* }, parseInt(Math.random()*1500)+1);
-	*
-	* // For more examples, please check unit tests at @see qpp.SemaphoresHash
-	*
-	* @memberof qpp
-	* @alias qpp.SemaphoresHash
-	* @exports qpp.SemaphoresHash
-	* @class qpp.SemaphoresHash
-	* @param {string} [name="SemaphoresHash"] - The name of the created SemaphoresHash
-	* @param {number(integer)} [resourcesNo=1] - The total numer of resources available
-	* @param {boolean} [debug=false] - Defines if debugging messages should be shown during SemaphoresHash operations
+	@classdesc This is a class that provides promises enabled SemaphoresHashes.
+	It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
+	and release them when we do not need them anymore
+	
+	@example
+	// Example of two consumers
+	var QPP = require('./..');
+	var s = new QPP.SemaphoresHash();
+	s.create('test1');
+	s.wait('test1');
+	s.wait('test2'); // semaphore 'test2' is implictly created when we try to listen for it (no need for explicit create)
+	s.signal('test2');
+	s.signal('test1');
+
+	// For more examples, please check demo code and unit tests for @see qpp.SemaphoresHash
+
+	@memberof qpp
+	@alias qpp.SemaphoresHash
+	@exports qpp.SemaphoresHash
+	@class qpp.SemaphoresHash
+	@param {string} [name="SemaphoresHash"] - The name of the created SemaphoresHash
+	@param {number(integer)} [resourcesNo=1] - The total numer of resources available
+	@param {boolean} [debug=false] - Defines if debugging messages should be shown during SemaphoresHash operations
 	*/
 	var SemaphoresHash = function(resourcesNo, debug){
 		resourcesNo = resourcesNo || 1;
 		/**
-		* @memberof! qpp.SemaphoresHash#
-		* @var {Array.&lt;string,QPP.Semaphore>} semaphores - array hash of semaphores
+		@memberof! qpp.SemaphoresHash#
+		@var {Array.&lt;string,QPP.Semaphore>} semaphores - array hash of semaphores
 		*/
 		this.semaphores = {};
 		/**
-		* @memberof! qpp.SemaphoresHash#
-		* @private
-		* @var {string} initialResources - initial (total) number of resources that SemaphoresHash has
+		@memberof! qpp.SemaphoresHash#
+		@private
+		@var {string} initialResources - initial (total) number of resources that SemaphoresHash has
 		*/
 		this.initialResources = resourcesNo;
 
 		/** 
-		* @memberof! qpp.SemaphoresHash#
-		* @var {boolean} debug - defines if debugging messages should be shown during SemaphoresHash operations
+		@memberof! qpp.SemaphoresHash#
+		@var {boolean} debug - defines if debugging messages should be shown during SemaphoresHash operations
 		*/
-		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
+		this.debug = typeof debug !== 'undefined' ? debug : false;
 	};
 
 	/**
-	* create named semaphore in SemaphoresHash
-	* @memberof qpp.SemaphoresHash#
-	* @function create
-	* @returns {QPP.Semaphore} returns newly created semaphore
+	create named semaphore in SemaphoresHash
+	@memberof qpp.SemaphoresHash#
+	@function create
+	@returns {QPP.Semaphore} returns newly created semaphore
 	*/
 	SemaphoresHash.prototype.create = function(name){
 		if(!(name in this.semaphores)){
-			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources, this.debug);
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		if(this.debug) console.log("[SemaphoresHash.prototype.create] name:%s", name);
 		return semaphore;
 	};
 
 	/**
-	* waits on SemaphoresHash
-	* @memberof qpp.SemaphoresHash#
-	* @function wait
-	* @returns {external:Promise} promise that will get resolved after the named semaphore in the SemaphoresHash is available.
-	* The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
-	* In that case it will get rejected with an @see {@link Error}.
+	waits on SemaphoresHash
+	@memberof qpp.SemaphoresHash#
+	@function wait
+	@returns {external:Promise} promise that will get resolved after the named semaphore in the SemaphoresHash is available.
+	The only possibility for promise to get rejected is when SemaphoresHash gets destroyed
+	In that case it will get rejected with an @see {@link Error}.
 	*/
 	SemaphoresHash.prototype.wait = function(name){
 		if(!(name in this.semaphores)){
-			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources, this.debug);
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		if(this.debug) console.log("[SemaphoresHash.wait] name:%s", name);
 		return semaphore.wait();
 	};
 
 	/**
-	* release resources in the named of the SemaphoresHash
-	* @memberof qpp.SemaphoresHash#
-	* @function signal
+	release resources in the named of the SemaphoresHash
+	@memberof qpp.SemaphoresHash#
+	@function signal
 	*/
 	SemaphoresHash.prototype.signal = function(name){
 		if(!(name in this.semaphores)){
@@ -590,6 +574,7 @@ QPP.SemaphoresHash = (function() {
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		if(this.debug) console.log("[SemaphoresHash.signal] name:%s", name);
 		return semaphore.signal();
 	}
 
@@ -719,9 +704,12 @@ QPP.mapBandwidth = function(options, iterator){
 			}
 
 			iterator.processingIterator++;
-			if(typeof promise !== 'undefined' &amp;&amp; ('then' in promise)) promise.then(function(){
-				processingFunctionFinished();
-			}).done();
+			if(typeof promise !== 'undefined' &amp;&amp; ('then' in promise)){
+				promise.then(function(){
+					processingFunctionFinished();
+				}).done();
+				promise.done();
+			}
 		}
 		if(iterator.processingCurrentNo == 0) deferred.resolve(iterator.processingData.length);			
 	}
@@ -790,7 +778,7 @@ Copyright (c) 2015 Sasha Rudan
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on Saturday, January 2nd 2016
+		on Sunday, January 3rd 2016
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

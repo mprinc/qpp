@@ -86,8 +86,8 @@
         </h2>
         
             <div class="class-description"><p>This is a class that provides promises enabled semaphores.
-It differs from the class Semaphore (@see <a href="qpp.Semaphore.html"><code>qpp.Semaphore</code></a> ) in a way
-it supports allocation of more than one resource in one wait() call</p></div>
+    It differs from the class Semaphore (@see <a href="qpp.Semaphore.html"><code>qpp.Semaphore</code></a> ) in a way
+    it supports allocation of more than one resource in one wait() call</p></div>
         
     
 </header>
@@ -374,56 +374,58 @@ it supports allocation of more than one resource in one wait() call</p></div>
         <h5>Example</h5>
         
     <pre class="sunlight-highlight-javascript">// Example of 3 groups
-var QPP = require(&#x27;qpp&#x27;);
-var s = new QPP.SemaphoreMultiReservation(&#x27;Nebojsa tower&#x27;, 5);
+	var QPP = require(&#x27;qpp&#x27;);
+	var s = new QPP.SemaphoreMultiReservation(&#x27;Nebojsa tower&#x27;, 5);
+	
+	// group 1
+	setTimeout(function(){
+		s.wait(3) // 3 people
+		.then(function(){ // resource is available, consuming resource
+			console.log(&quot;Group 1: Let&#x27;s run to the top!&quot;);
+			setTimeout(function(){
+				console.log(&quot;Group 1: Great experience, but they ask us to leave!&quot;)
+				s.signal(3); // releasing resource (toilet)
+			}, parseInt(Math.random()*1500)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// group 2
+	setTimeout(function(){
+		s.wait(4) // 4 people
+		.then(function(){ // resource is available, consuming resource
+			console.log(&quot;Group 2: Tower is available for us!&quot;);
+			setTimeout(function(){
+				console.log(&quot;Group 2: Let&#x27;s give the space for others!&quot;)
+				s.signal(4); // releasing resource (toilet)
+			}, parseInt(Math.random()*500)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// group 3
+	setTimeout(function(){
+		s.wait(2) // 2 people
+		.then(function(){ // resource is available, consuming resource
+			console.log(&quot;Group 3: Hey, i have to show you the view!&quot;);
+			setTimeout(function(){
+				console.log(&quot;Group 3: Ah, we could stay here forever!&quot;)
+				s.signal(2); // releasing resource (toilet)
+			}, parseInt(Math.random()*100)+1);
+		});
+	}, parseInt(Math.random()*100)+1);
+	
+	// This is the most interesting scenario:
+	//		Group 2: Tower is available for us
+	//		Group 2: Let&#x27;s give the space for others
+	//		Group 3: Hey, i have to show you the view
+	//		Group 1: Let&#x27;s run to the top
+	//		Group 3: Ah, we could stay here forever
+	//		Group 1: Great experience, but they ask us to leave!
+	// Because both group 1 and 3 ended up at the top of the towe simultaneously
+	// (there were enough of resources to allocate for both (2+3&lt;=5))
+	// 
+	// For more examples, please check unit tests for @see qpp.mapBandwidth	
 
-// group 1
-setTimeout(function(){
-	s.wait(3) // 3 people
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 1: Let&#x27;s run to the top!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Group 1: Great experience, but they ask us to leave!&quot;)
-			s.signal(3); // releasing resource (toilet)
-		}, parseInt(Math.random()*1500)+1);
-	});
-}, parseInt(Math.random()*100)+1);
-
-// group 2
-setTimeout(function(){
-	s.wait(4) // 4 people
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 2: Tower is available for us!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Group 2: Let&#x27;s give the space for others!&quot;)
-			s.signal(4); // releasing resource (toilet)
-		}, parseInt(Math.random()*500)+1);
-	});
-}, parseInt(Math.random()*100)+1);
-
-// group 3
-setTimeout(function(){
-	s.wait(2) // 2 people
-	.then(function(){ // resource is available, consuming resource
-		console.log(&quot;Group 3: Hey, i have to show you the view!&quot;);
-		setTimeout(function(){
-			console.log(&quot;Group 3: Ah, we could stay here forever!&quot;)
-			s.signal(2); // releasing resource (toilet)
-		}, parseInt(Math.random()*100)+1);
-	});
-}, parseInt(Math.random()*100)+1);
-
-// This is the most interesting scenario:
-//		Group 2: Tower is available for us
-//		Group 2: Let&#x27;s give the space for others
-//		Group 3: Hey, i have to show you the view
-//		Group 1: Let&#x27;s run to the top
-//		Group 3: Ah, we could stay here forever
-//		Group 1: Great experience, but they ask us to leave!
-// Because both group 1 and 3 ended up at the top of the towe simultaneously
-// (there were enough of resources to allocate for both (2+3&lt;=5))
-// 
-// For more examples, please check unit tests at @see qpp.mapBandwidth	</pre>
+	</pre>
 
 
     
@@ -777,12 +779,12 @@ setTimeout(function(){
         <h5>Example</h5>
         
     <pre class="sunlight-highlight-javascript">var s = new Semaphore(&#x27;s&#x27;, 3);
-var wP1 = s.wait(1); // fine, 2 resources left available
-var wP2 = s.wait(3); // not fine (consumer 1 has to release)
-// wP3 will be fine and resolved if <code>this.waitForMoreDemandingConsumers</code> === false
-// or not fine and not resolved until consumer 1&#x27;s resources are released (signaled) 
-// if <code>this.waitForMoreDemandingConsumers</code> === true (default)
-var wP3 = s.wait(2);</pre>
+		var wP1 = s.wait(1); // fine, 2 resources left available
+		var wP2 = s.wait(3); // not fine (consumer 1 has to release)
+		// wP3 will be fine and resolved if <code>this.waitForMoreDemandingConsumers</code> === false
+		// or not fine and not resolved until consumer 1&#x27;s resources are released (signaled) 
+		// if <code>this.waitForMoreDemandingConsumers</code> === true (default)
+		var wP3 = s.wait(2);</pre>
 
 
     
@@ -1111,8 +1113,8 @@ var wP3 = s.wait(2);</pre>
             
 <div class="param-desc">
     <p>promise that will get resolved after the semaphore is available/
-The only possibility for promise to get rejected is when semaphore gets destroyed
-In that case it will get rejected with an @see <code>Error</code>.</p>
+    The only possibility for promise to get rejected is when semaphore gets destroyed
+    In that case it will get rejected with an @see <code>Error</code>.</p>
 </div>
 
 
@@ -1191,7 +1193,7 @@ Copyright (c) 2015 Sasha Rudan
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on Saturday, January 2nd 2016
+		on Sunday, January 3rd 2016
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
