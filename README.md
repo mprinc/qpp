@@ -1,9 +1,6 @@
 # qpp
 
-=========
-
 Promises Augmentation &amp; Patterns
-# qpp
 
 [![Build Status](https://travis-ci.org/mprinc/qpp.svg)](https://travis-ci.org/mprinc/qpp)
 [![Dependency Status](https://david-dm.org/mprinc/qpp.svg)](https://david-dm.org/mprinc/qpp)
