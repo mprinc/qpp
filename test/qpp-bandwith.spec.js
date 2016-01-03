@@ -15,29 +15,29 @@ var extremeTest = false;
 // testing:
 // cdd; cd ChaOS/democracy-framework/wikipedia/qpp
 // node node_modules/mocha/bin/mocha test/semaphore.spec.js
-describe('Qpp.mapBandwith: ', function() {
+describe('Qpp.mapBandwidth: ', function() {
 
-	describe('when testing mapBandwith', function() {
+	describe('when testing mapBandwidth', function() {
 	    this.timeout(500);
 
 		it('it should exist', function() {
-			expect(QPP).to.have.property('mapBandwith');
+			expect(QPP).to.have.property('mapBandwidth');
 		});
 
 		it('constructed object should have promise', function() {
-			var iterator = QPP.mapBandwith();
+			var iterator = QPP.mapBandwidth();
 			expect(iterator).to.be.a('object');
 			expect(iterator).to.have.property('$promise');
 			expect(iterator.$promise).to.be.instanceof(Q.makePromise);
 		});
 
 		it('it should react to missing parameters', function() {
-			var iterator1 = QPP.mapBandwith();
+			var iterator1 = QPP.mapBandwidth();
 
 			var options = {};
-			var iterator2 = QPP.mapBandwith(options);
+			var iterator2 = QPP.mapBandwidth(options);
 			options.processingFunction = function(){};
-			var iterator3 = QPP.mapBandwith(options);
+			var iterator3 = QPP.mapBandwidth(options);
 			return Q.all([
 				iterator1.$promise.should.be.eventually.rejectedWith(Error, "Missing options"),
 				iterator2.$promise.should.be.eventually.rejectedWith(Error, "Missing processingFunction"),
@@ -66,7 +66,7 @@ describe('Qpp.mapBandwith: ', function() {
 			options.processingData = [0, 1, 2, 3, 4, 5];
 			options.limitConcurrentlyNum = 3;
 			options.processingFunction = processingFunction;
-			iterator = QPP.mapBandwith(options, iterator);
+			iterator = QPP.mapBandwidth(options, iterator);
 			expect(iterator.processingCurrentNo).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 			expect(iterator.processingIterator).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 
@@ -100,7 +100,7 @@ describe('Qpp.mapBandwith: ', function() {
 			options.processingData = [0, 1, 2, 3, 4, 5];
 			options.limitConcurrentlyNum = 10;
 			options.processingFunction = processingFunction;
-			iterator = QPP.mapBandwith(options, iterator);
+			iterator = QPP.mapBandwidth(options, iterator);
 			expect(iterator.processingCurrentNo).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 			expect(iterator.processingIterator).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 
@@ -115,7 +115,7 @@ describe('Qpp.mapBandwith: ', function() {
 			]);
 		});
 
-		it('it should provide arguments to processingFunctions (both promises and callbacks mapBandwith running in parallel)', function() {
+		it('it should provide arguments to processingFunctions (both promises and callbacks mapBandwidth running in parallel)', function() {
 			var options1 = {};
 			var options2 = {};
 			var iterator1 = {};
@@ -155,16 +155,16 @@ describe('Qpp.mapBandwith: ', function() {
 			options1.limitConcurrentlyNum = 2;
 			options1.processingFunction = processingFunctionPromised;
 			options1.debug = debug;
-			options1.name = "mapBandwith1";
-			iterator1 = QPP.mapBandwith(options1, iterator1);
+			options1.name = "mapBandwidth1";
+			iterator1 = QPP.mapBandwidth(options1, iterator1);
 
 			options2.processingData = [0, 1, 2, 3, 4, 5, 6, 7];
 			options2.processingArguments = [multiplication, substitution];
 			options2.limitConcurrentlyNum = 3;
 			options2.processingFunction = processingFunctionCallbacked;
 			options2.debug = debug;
-			options2.name = "mapBandwith2";
-			iterator2 = QPP.mapBandwith(options2, iterator2);
+			options2.name = "mapBandwidth2";
+			iterator2 = QPP.mapBandwidth(options2, iterator2);
 
 			var promise1 = iterator1.$promise.then(function(processedNo){
 				expect(sum1).to.be.equal(options1.processingData.reduce(function(sum, data){return (data*multiplication + addition)+sum;}, 0));
@@ -203,7 +203,7 @@ describe('Qpp.mapBandwith: ', function() {
 		}
 		options.limitConcurrentlyNum = 3;
 		options.processingFunction = processingFunction;
-		iterator = QPP.mapBandwith(options, iterator);
+		iterator = QPP.mapBandwidth(options, iterator);
 		expect(iterator.processingCurrentNo).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 		expect(iterator.processingIterator).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 
