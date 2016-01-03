@@ -205,7 +205,7 @@ QPP.Semaphore = (function() {
 		@memberof! qpp.Semaphore#
 		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
-		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
+		this.debug = typeof debug !== 'undefined' ? debug : false;
 	};
 
 	/**
@@ -345,8 +345,9 @@ QPP.SemaphoreMultiReservation = (function() {
 	@param {number(integer)} [resourcesNo=1] - The total numer of resources available
 	@param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
 	@param {boolean} [waitForMoreDemandingConsumers=true] - Defines if consumer can allocate resources even if other consumer waits for available resources (but needs more resources than currently available)
+	@param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
 	*/
-	var SemaphoreMultiReservation = function(name, resourcesNo, waitForMoreDemandingConsumers){
+	var SemaphoreMultiReservation = function(name, resourcesNo, waitForMoreDemandingConsumers, debug){
 		/**
 		@memberof! qpp.SemaphoreMultiReservation#
 		@var {string} name - name of the semaphore
@@ -389,7 +390,7 @@ QPP.SemaphoreMultiReservation = (function() {
 		@memberof! qpp.SemaphoreMultiReservation#
 		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
-		this.debug = typeof this.debug !== 'undefined' ? this.debug : false;
+		this.debug = typeof debug !== 'undefined' ? debug : false;
 	};
 
 	/**
