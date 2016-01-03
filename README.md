@@ -6,6 +6,9 @@ Promises Augmentation &amp; Patterns
 # qpp
 
 [![Build Status](https://travis-ci.org/mprinc/qpp.svg)](https://travis-ci.org/mprinc/qpp)
+[![Dependency Status](https://david-dm.org/mprinc/qpp.svg)](https://david-dm.org/mprinc/qpp)
+[![Coverage Status](https://img.shields.io/coveralls/mprinc/qpp.svg)](https://coveralls.io/r/mprinc/qpp)
+
 
 [![NPM](https://nodei.co/npm/qpp.png?downloads=true&stars=true)](https://nodei.co/npm/qpp/)
 
