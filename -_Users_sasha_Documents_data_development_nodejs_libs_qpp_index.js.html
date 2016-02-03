@@ -82,34 +82,41 @@
     <article>
         <pre
             class="sunlight-highlight-javascript linenums">/**
-* QPP
-* Copyright(c) 2015-2016 Sasha Rudan &lt;mprinc@gmail.com>
-* MIT Licensed 
-* Promises Augmentation &amp; Patterns library
+QPP
+Copyright(c) 2015-2016 Sasha Rudan &lt;mprinc@gmail.com>
+MIT Licensed 
+Promises Augmentation &amp; Patterns library
 *
-* ```js
-* var QPP = require('qpp');
-* ```
+```js
+var QPP = require('qpp');
+```
 */
 
 (function () { // This prevents problems when concatenating scripts that aren't strict.
 'use strict';
 
 /**
-* @description
-* ## Info
-* This module provides different Promise related (implemented with) patterns and sollutions
-* It contains semaphore implementation for syncing consumers of resources
-* (like simultaneous writing in files, etc), and concurrent itterators that are limited 
-* by number of parallel execution of iterators (if we want to limit number of parallel acceses
-* to webservice, etc).
-* ## Dependencies
-* This module requires {@link https://www.npmjs.com/package/q | q npm module} (please check also the @see {@link https://github.com/kriskowal/q | q github})
-* @module module:qpp
-* @requires module:q
+@description
+## Info
+This module provides different Promise related (implemented with) patterns and sollutions
+It contains semaphore implementation for syncing consumers of resources
+(like simultaneous writing in files, etc), and concurrent itterators that are limited 
+by number of parallel execution of iterators (if we want to limit number of parallel acceses
+to webservice, etc).
+## Dependencies
+This module requires {@link https://www.npmjs.com/package/q | q npm module} (please check also the @see {@link https://github.com/kriskowal/q | q github})
+@module module:qpp
+@requires module:q
 */
 
-var Q = require('q');
+var Q = null;
+
+if(typeof require !== 'undefined'){
+	Q = require('q');
+}
+else if(!Q &amp;&amp; typeof Promise !== 'undefined'){
+	Q = Promise;
+}
 
  // TODO: how to express that Promise is part of q module
 /**
@@ -118,13 +125,14 @@ var Q = require('q');
  */
 
 var QPP = {
+	author: 'Sasha Mile Rudan (mPrinC) &lt;mprinc@gmail.com>',
 	name: 'qpp',
 	desc: 'Promises Augmentation &amp; Patterns library',
 	version: '1.0.0'
 };
 
 /*
-* @exports qpp.Semaphore
+@exports qpp.Semaphore
 */
 QPP.Semaphore = (function() {
 
@@ -175,8 +183,9 @@ QPP.Semaphore = (function() {
 	@param {string} [name="semaphore"] - The name of the created semaphore
 	@param {number(integer)} [resourcesNo=1] - The total numer of resources available
 	@param {boolean} [debug=false] - Defines if debugging messages should be shown during Semaphore operations
+	@param {boolean} [supportConsumersLog=false] - defines if we should support consumers log
 	*/
-	var Semaphore = function(name, resourcesNo, debug){
+	var Semaphore = function(name, resourcesNo, debug, supportConsumersLog){
 		/**
 		@memberof! qpp.Semaphore#
 		@var {string} name - name of the semaphore
@@ -206,17 +215,41 @@ QPP.Semaphore = (function() {
 		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
 		this.debug = typeof debug !== 'undefined' ? debug : false;
+		/** 
+		@memberof! qpp.Semaphore#
+		@var {boolean} supportConsumersLog - defines if we should support consumers log
+		if set to `true`, every [wait()]{@link qpp.Semaphore#wait} will remmeber the consumer name and 
+		return an wait id, that user can provide to [singnal()]{@link qpp.Semaphore#singnal} to signal
+		that the specific wait is finished
+		*/
+		this.supportConsumersLog = typeof supportConsumersLog !== 'undefined' ? supportConsumersLog : false;
+		if(this.supportConsumersLog){
+			/** 
+			@memberof! qpp.Semaphore#
+			@var {Array.&lt;number(int)>} consumersLog - consumers log tracking consumers that are currently using resources
+			*/
+			this.consumersLog = [];
+
+			/** 
+			@memberof! qpp.Semaphore#
+			@var {Array.&lt;number(int)>} consumerUniqueId - unique id of each new consumption
+			*/
+			this.consumerUniqueId = 0;
+		}
 	};
 
 	/**
 	waits on semaphore
 	@memberof qpp.Semaphore#
 	@function wait
+	@param {string} consumerName - name of the consumer
 	@returns {external:Promise} promise that will get resolved after the semaphore is available.
 	The only possibility for promise to get rejected is when semaphore gets destroyed
 	In that case it will get rejected with an @see {@link Error}.
 	*/
-	Semaphore.prototype.wait = function(){
+	Semaphore.prototype.wait = function(consumerName){
+		var that = this;
+
 		var deferred = Q.defer();
 		if(this.debug) console.log("[Semaphore:%s:wait] this.resourcesNo:%d", this.name, this.resourcesNo);
 
@@ -224,15 +257,39 @@ QPP.Semaphore = (function() {
 		// enough available resources
 		if(this.resourcesNo>=0){
 			if(this.debug) console.log("[Semaphore:%s:wait] available", this.name);
-			deferred.resolve(this.resourcesNo);
+
+			if(this.supportConsumersLog){
+				this.consumersLog.push({
+					consumerId: this.consumerUniqueId++,
+					consumerName: consumerName
+				});
+			}
+			deferred.resolve(this.resourcesNo, consumerId);
 		// no enough available resources
 		}else{
 			if(this.debug) console.log("[Semaphore:%s:wait] not available", this.name);
 			var that = this;
-			this.waitingQueue.push(function(){
-				if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
-				deferred.resolve(that.resourcesNo);
-			});
+			if(this.supportConsumersLog){
+				var consumerId = this.consumerUniqueId++;
+				this.waitingQueue.push({
+					func: function(){
+						if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
+						that.consumersLog.push({
+							consumerId: consumerId,
+							consumerName: consumerName
+						});
+						deferred.resolve(that.resourcesNo);
+					},
+					consumerId: consumerId,
+					consumerName: consumerName					
+				});				
+
+			}else{
+				this.waitingQueue.push(function(){
+					if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
+					deferred.resolve(that.resourcesNo);
+				});				
+			}
 		}			
 		return deferred.promise;
 	};
@@ -256,15 +313,44 @@ QPP.Semaphore = (function() {
 	release resources in semaphore
 	@memberof qpp.Semaphore#
 	@function signal
+	@param {(number(int)|string)} [consumerIdName] - consumer name (string) or consumer id (integer)
 	*/
-	Semaphore.prototype.signal = function(){
+	Semaphore.prototype.signal = function(consumerIdName){
 		if(this.debug) console.log("[Semaphore:%s:signal] this.resourcesNo:%d", this.name, this.resourcesNo);
 		this.resourcesNo++;
+
+		if(this.supportConsumersLog){
+			var consumerName = undefined;
+			var consumerId = undefined;
+
+			if(typeof consumerIdName === 'string') consumerName = consumerIdName;
+			else if(typeof consumerIdName === 'number') consumerId = consumerIdName;
+			else if(typeof consumerIdName === 'undefined'){
+				console.error("[Semaphore:%s:signal] if consumer logging is enabled then consumerIdName should be provided");
+			}
+
+			for(var i=0; i&lt;this.consumersLog.length; i++){
+				var consumerLog = this.consumersLog[i];
+				if(consumerName &amp;&amp; consumerLog.consumerName === consumerName){
+					this.consumersLog.splice(i, 1);
+				}else if(consumerId &amp;&amp; consumerLog.consumerId === consumerId){
+					this.consumersLog.splice(i, 1);
+				}
+			}
+		}else{
+
+		}
+
 		// someone is waiting for available resources
 		if(this.waitingQueue.length>0){
 			if(this.debug) console.log("[Semaphore:%s:signal] %d consumers waiting in the queue", this.name, this.waitingQueue.length);
-			var func = this.waitingQueue.shift();
-			func();
+			if(this.supportConsumersLog){
+				var elem = this.waitingQueue.shift();
+				elem.func();
+			}else{
+				var func = this.waitingQueue.shift();
+				func();
+			}
 		}else{
 			if(this.debug) console.log("[Semaphore:%s:signal] no consumers waiting in the queue", this.name);
 		}
@@ -274,7 +360,7 @@ QPP.Semaphore = (function() {
 })();
 
 /*
-* @exports qpp.SemaphoreMultiReservation
+@exports qpp.SemaphoreMultiReservation
 */
 QPP.SemaphoreMultiReservation = (function() {
 	/**
@@ -479,7 +565,7 @@ QPP.SemaphoreMultiReservation = (function() {
 })();
 
 /*
-* @exports qpp.SemaphoresHash
+@exports qpp.SemaphoresHash
 */
 QPP.SemaphoresHash = (function() {
 	/**
@@ -583,69 +669,69 @@ QPP.SemaphoresHash = (function() {
 })();
 
 /**
-* This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwidth, etc)
-* @callback processingFunctionCallback
-* @param {*} dataElement - data element to be processed
-* @param {number(index)} index - index of the processing element in the array
-* @param {...*} [processingArgs] - additional arguments passed with options.processingArguments
-* @param {processingFunctionFinishedCallback} callback - callback from the processing function back, when the processing is finished
-* @returns {Promise} promise that will get realized after function  is available
+This is a type (a signature) of a processing function (callback) that is called for every element to be processed in the case of itterators (mapBandwidth, etc)
+@callback processingFunctionCallback
+@param {*} dataElement - data element to be processed
+@param {number(index)} index - index of the processing element in the array
+@param {...*} [processingArgs] - additional arguments passed with options.processingArguments
+@param {processingFunctionFinishedCallback} callback - callback from the processing function back, when the processing is finished
+@returns {Promise} promise that will get realized after function  is available
 */
 
 /**
-* This is a type (a signature) of a processing function callback, called back from the processing function {@link processingFunctionCallback}. Processing function calls the iterator (mapBandwidth etc) when it finishes processing the processing element.
-* Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback
-* @callback processingFunctionFinishedCallback  @see {@link processingFunctionCallback}
-* @param {number(index)} index - index of the processing element in the array that has been processed @see {@link processingFunctionCallback}
+This is a type (a signature) of a processing function callback, called back from the processing function {@link processingFunctionCallback}. Processing function calls the iterator (mapBandwidth etc) when it finishes processing the processing element.
+Note: the more preferred way is that function returns a promise and communicate with iterator through the promise instead through callback
+@callback processingFunctionFinishedCallback  @see {@link processingFunctionCallback}
+@param {number(index)} index - index of the processing element in the array that has been processed @see {@link processingFunctionCallback}
 */
 
 /**
-* @example
-* var Q = require('q');
-* var QPP = require('./..');
-* 
-* var iterator = {};
-* var sum = 0;
-* var processingFunction = function(data, index){
-* 	console.log("[processingFunction:starting] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
-* 	// test for the limit of concurrently running functions
-* 	var defered = Q.defer();
-* 	setTimeout(function(){
-* 		sum += data;
-* 		console.log("[processingFunction:finishing] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
-* 		defered.resolve();
-* 	}, parseInt(Math.random()*100)+1);
-* 
-* 	return defered.promise;
-* };
-* 
-* var options = {};
-* options.processingData = [0, 1, 2, 3, 4, 5];
-* options.limitConcurrentlyNum = 3;
-* options.processingFunction = processingFunction;
-* iterator = QPP.mapBandwidth(options, iterator);
-* 
-* var promise = iterator.$promise;
-* 
-* promise.then(function(processedNo){
-* 	console.log("Done: processed: %d, sum: %d", processedNo, sum);
-* });
+@example
+var Q = require('q');
+var QPP = require('./..');
+
+var iterator = {};
+var sum = 0;
+var processingFunction = function(data, index){
+		console.log("[processingFunction:starting] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
+	// test for the limit of concurrently running functions
+	var defered = Q.defer();
+	setTimeout(function(){
+			sum += data;
+		console.log("[processingFunction:finishing] data: %s, iterator.processingCurrentNo: %d", data, iterator.processingCurrentNo);
+		defered.resolve();
+	}, parseInt(Math.random()*100)+1);
+
+	return defered.promise;
+};
+
+var options = {};
+options.processingData = [0, 1, 2, 3, 4, 5];
+options.limitConcurrentlyNum = 3;
+options.processingFunction = processingFunction;
+iterator = QPP.mapBandwidth(options, iterator);
+
+var promise = iterator.$promise;
+
+promise.then(function(processedNo){
+		console.log("Done: processed: %d, sum: %d", processedNo, sum);
+});
 *
-* @exports qpp.mapBandwidth
-* @function mapBandwidth - Bandwidth limited iteration
+@exports qpp.mapBandwidth
+@function mapBandwidth - Bandwidth limited iteration
 
-* @param {Object} options - Parameters
-* @param {string} options.name - the name of the iterator
-* @param {Array.&lt;*>} options.processingData - an array that has to be processed. For each element of array the options.processingFunction will be invited to process it
-* @param {processingFunctionCallback} options.processingFunction - function that is called for processing data 
-* @param {Object} [options.thisObj] - the object/context in which processing function will be called
-* @param {Array.&lt;*>} [options.processingArguments] - arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters
-* @param {number(integer)} options.limitConcurrentlyNum - the number of concurrently processing array elements (calls to the options.processingFunction)
-* @param {number(integer)} options.limitPerSecond - the maximum number array elements to process per second
-* @param {boolean} options.debug - defines if debugging messages should be shown during mapBandwidth processing
+@param {Object} options - Parameters
+@param {string} options.name - the name of the iterator
+@param {Array.&lt;*>} options.processingData - an array that has to be processed. For each element of array the options.processingFunction will be invited to process it
+@param {processingFunctionCallback} options.processingFunction - function that is called for processing data 
+@param {Object} [options.thisObj] - the object/context in which processing function will be called
+@param {Array.&lt;*>} [options.processingArguments] - arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters
+@param {number(integer)} options.limitConcurrentlyNum - the number of concurrently processing array elements (calls to the options.processingFunction)
+@param {number(integer)} options.limitPerSecond - the maximum number array elements to process per second
+@param {boolean} options.debug - defines if debugging messages should be shown during mapBandwidth processing
 
-* @param {Object} [iterator={}] iterator that keeps information of the iteration status and options
-* @return {Object} iterator that keeps information of the iteration status and options
+@param {Object} [iterator={}] iterator that keeps information of the iteration status and options
+@return {Object} iterator that keeps information of the iteration status and options
 */
 QPP.mapBandwidth = function(options, iterator){
 	iterator = iterator || {};
@@ -729,9 +815,14 @@ QPP.mapBandwidthArgumentsList = function(processingFunction, processingData){
 };
 
 // node.js world
-module.exports = (function() {
-	return QPP;
-})();
+if(typeof module !== 'undefined'){
+	module.exports = (function() {
+		return QPP;
+	})();	
+}
+if(typeof window != 'undefined'){
+	window.QPP = QPP;
+}
 
 }()); // end of 'use strict';</pre>
     </article>
@@ -779,7 +870,7 @@ Copyright (c) 2015 Sasha Rudan
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on Sunday, January 3rd 2016
+		on Wednesday, February 3rd 2016
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

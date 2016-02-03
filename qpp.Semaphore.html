@@ -100,7 +100,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Semaphore"><span class="type-signature"></span>new Semaphore(<span class="optional">name</span>, <span class="optional">resourcesNo</span>, <span class="optional">debug</span>)</h4>
+    <h4 class="name" id="Semaphore"><span class="type-signature"></span>new Semaphore(<span class="optional">name</span>, <span class="optional">resourcesNo</span>, <span class="optional">debug</span>, <span class="optional">supportConsumersLog</span>)</h4>
     
     
 </dt>
@@ -264,6 +264,46 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>supportConsumersLog</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>defines if we should support consumers log</p></td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -305,7 +345,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-50">line 50</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-58">line 58</a>
 			</li>
 		</ul>
 	</dd>
@@ -388,6 +428,168 @@
         <dl>
             
 <hr>
+<dt class="name" id="consumersLog">
+    <h4><span class="type-signature"></span>#consumersLog<span class="type-signature"> :Array.&lt;number(int)></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>consumers log tracking consumers that are currently using resources</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Array.&lt;number(int)></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-144">line 144</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="consumerUniqueId">
+    <h4><span class="type-signature"></span>#consumerUniqueId<span class="type-signature"> :Array.&lt;number(int)></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>unique id of each new consumption</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Array.&lt;number(int)></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-150">line 150</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
 <dt class="name" id="debug">
     <h4><span class="type-signature"></span>#debug<span class="type-signature"> :boolean</span></h4>
 
@@ -449,7 +651,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-121">line 121</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-130">line 130</a>
 			</li>
 		</ul>
 	</dd>
@@ -530,7 +732,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-97">line 97</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-106">line 106</a>
 			</li>
 		</ul>
 	</dd>
@@ -611,7 +813,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-109">line 109</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-118">line 118</a>
 			</li>
 		</ul>
 	</dd>
@@ -628,33 +830,35 @@
     
 </dd>
 
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
+        
             
 <hr>
-<dt>
-    <h4 class="name" id="signal"><span class="type-signature"></span>signal()</h4>
-    
+<dt class="name" id="supportConsumersLog">
+    <h4><span class="type-signature"></span>#supportConsumersLog<span class="type-signature"> :boolean</span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>release resources in semaphore</p>
+        <p>defines if we should support consumers log
+        if set to <code>true</code>, every <a href="qpp.Semaphore.html#wait"><code>wait()</code></a> will remmeber the consumer name and 
+        return an wait id, that user can provide to <code>singnal()</code> to signal
+        that the specific wait is finished</p>
     </div>
     
 
     
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
 
-    
 
-    
+
+            </li>
+        </ul>
     
 
     
@@ -693,7 +897,154 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-172">line 172</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-135">line 135</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<hr>
+<dt>
+    <h4 class="name" id="signal"><span class="type-signature"></span>signal(<span class="optional">consumerIdName</span>)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>release resources in semaphore</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>consumerIdName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number(int)</span>
+|
+
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>consumer name (string) or consumer id (integer)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-229">line 229</a>
 			</li>
 		</ul>
 	</dd>
@@ -726,7 +1077,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="wait"><span class="type-signature"></span>wait()</h4>
+    <h4 class="name" id="wait"><span class="type-signature"></span>wait(consumerName)</h4>
     
     
 </dt>
@@ -743,6 +1094,56 @@
     
 
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>consumerName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>name of the consumer</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
     
 
     
@@ -781,7 +1182,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html">/Users/sasha/Documents/data/development/nodejs/libs/qpp/index.js</a>,
-				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-128">line 128</a>
+				 <a href="-_Users_sasha_Documents_data_development_nodejs_libs_qpp_index.js.html#sunlight-1-line-158">line 158</a>
 			</li>
 		</ul>
 	</dd>
@@ -891,7 +1292,7 @@ Copyright (c) 2015 Sasha Rudan
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
 	
-		on Sunday, January 3rd 2016
+		on Wednesday, February 3rd 2016
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
