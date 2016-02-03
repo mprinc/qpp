@@ -103,5 +103,48 @@ describe('Semaphore: ', function() {
 
 			return Q.all([task1Promise, task2Promise, task3Promise, task4Promise]);
 		});
+
+		it('it should be possible to wait and signal from multiple callbacks with consumersLog enabled', function() {
+			var s = new QPP.Semaphore('test', 1, false, true);
+			task1Promise = s.wait("task1");
+			task1Promise.then(function(){
+				setTimeout(function(){
+					s.signal("task1");
+				}, parseInt(Math.random()*10)+1);
+			}).done();
+			task2Promise = s.wait("task2");
+			task2Promise.then(function(){
+				setTimeout(function(){
+					s.signal("task2");
+				}, parseInt(Math.random()*10)+1);
+			}).done();
+			task3Promise = s.wait("task3");
+			task3Promise.then(function(){
+				setTimeout(function(){
+					s.signal("task3");
+				}, parseInt(Math.random()*10)+1);
+			}).done();
+			task4Promise = s.wait("task4");
+			var task4DonePromise = task4Promise.then(function(){
+				var deferred = Q.defer();
+				setTimeout(function(){
+					s.signal("task4");
+					deferred.resolve(1);
+				}, parseInt(Math.random()*10)+1);
+				return deferred.promise;
+			});
+
+			task4DonePromise.done();
+
+
+			expect(s.waitingQueue.length).to.equal(3);
+			expect(s.consumersLog.length).to.equal(1);
+
+			var finalTest = Q.all([task1Promise, task2Promise, task3Promise, task4Promise, task4DonePromise]).then(function(){
+				expect(s.waitingQueue.length).to.equal(0);
+				expect(s.consumersLog.length).to.equal(0);
+			})
+			return finalTest;
+		});
 	});
 });

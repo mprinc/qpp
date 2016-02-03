@@ -14,6 +14,7 @@ Promises Augmentation &amp; Patterns
 
 # Features
 
+* Works in node and browser
 * Support for limiting a bandwidth of executing a set of function
 	* by the number of concurrent running functions
 	* (TODO) by the number of functions running at particular time period
@@ -21,6 +22,12 @@ Promises Augmentation &amp; Patterns
 * Support for parallelism
 	* Semaphores
 		* single resource allocation
+		* support for __naming consumers__ (great for debugging deadlocks and leaks)
+			* every time you call wait you can provide a name, and use it on signal
+			* you can also use auto-provided unique consumer id
+			* check unit test: 
+				* file: test/semaphore.spec.js
+				* test: 'it should be possible to wait and signal from multiple callbacks'
 		* multiple resources allocation
 	* Semaphores hash
 		* collection of semaphores, each addressed by unique name
@@ -37,7 +44,7 @@ var s = new QPP.Semaphore('airstrip', 1);
 
 // airplane (consumer) 1, waits for passengers to board
 setTimeout(function(){
-	s.wait() // allocating the resource (airstrip)
+	s.wait() // allocating the resource (airstrip), returns a promise
 	.then(function(){ // resource is available, consuming resource
 		console.log("Pilot 1: Yes! The airstrip is freee! We are the next one!");
 		setTimeout(function(){

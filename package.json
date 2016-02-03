@@ -1,6 +1,6 @@
 {
 	"name": "qpp",
-	"version": "1.1.4",
+	"version": "1.1.6",
 	"description": "Promises Augmentation & Patterns",
 	"main": "index.js",
 	"directories": {
@@ -16,11 +16,14 @@
 		"url": "https://github.com/mprinc/qpp"
 	},
 	"keywords": [
+		"promise",
 		"promises",
 		"Q",
 		"parallelism",
 		"semaphores",
 		"bandwith",
+		"hash",
+		"hashes",
 		"serialization"
 	],
 	"author": "Sasha Rudan <mprinc@gmail.com> (https://github.com/mprinc)",
