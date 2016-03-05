@@ -1,7 +1,7 @@
 /**
 QPP
 Copyright(c) 2015-2016 Sasha Rudan <mprinc@gmail.com>
-MIT Licensed 
+MIT Licensed
 Promises Augmentation & Patterns library
 *
 ```js
@@ -17,7 +17,7 @@ var QPP = require('qpp');
 ## Info
 This module provides different Promise related (implemented with) patterns and sollutions
 It contains semaphore implementation for syncing consumers of resources
-(like simultaneous writing in files, etc), and concurrent itterators that are limited 
+(like simultaneous writing in files, etc), and concurrent itterators that are limited
 by number of parallel execution of iterators (if we want to limit number of parallel acceses
 to webservice, etc).
 ## Dependencies
@@ -31,7 +31,8 @@ var Q = null;
 if(typeof require !== 'undefined'){
 	Q = require('q');
 }
-else if(!Q && typeof Promise !== 'undefined'){
+
+if(!Q && typeof Promise !== 'undefined'){
 	Q = Promise;
 }
 
@@ -58,11 +59,11 @@ QPP.Semaphore = (function() {
 	/**
 	Constructor function. Creates a new semaphore with optional name and resources number
 
-	@classdesc This is a class that provides promises enabled semaphores. 
-	It is possible to create a semaphore with a name (merely fore debugging purposes) 
-	and speciffic number of resources that we can wait for to get available, 
+	@classdesc This is a class that provides promises enabled semaphores.
+	It is possible to create a semaphore with a name (merely fore debugging purposes)
+	and speciffic number of resources that we can wait for to get available,
 	and release them when we do not need them anymore
-	
+
 	@example
 	// Example of two consumers
 	var QPP = require('./..');
@@ -127,27 +128,27 @@ QPP.Semaphore = (function() {
 		*/
 		this.waitingQueue = [];
 
-		/** 
+		/**
 		@memberof! qpp.Semaphore#
 		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
 		this.debug = typeof debug !== 'undefined' ? debug : false;
-		/** 
+		/**
 		@memberof! qpp.Semaphore#
 		@var {boolean} supportConsumersLog - defines if we should support consumers log
-		if set to `true`, every [wait()]{@link qpp.Semaphore#wait} will remmeber the consumer name and 
+		if set to `true`, every [wait()]{@link qpp.Semaphore#wait} will remmeber the consumer name and
 		return an wait id, that user can provide to [singnal()]{@link qpp.Semaphore#singnal} to signal
 		that the specific wait is finished
 		*/
 		this.supportConsumersLog = typeof supportConsumersLog !== 'undefined' ? supportConsumersLog : false;
 		if(this.supportConsumersLog){
-			/** 
+			/**
 			@memberof! qpp.Semaphore#
 			@var {Array.<number(int)>} consumersLog - consumers log tracking consumers that are currently using resources
 			*/
 			this.consumersLog = [];
 
-			/** 
+			/**
 			@memberof! qpp.Semaphore#
 			@var {Array.<number(int)>} consumerUniqueId - unique id of each new consumption
 			*/
@@ -168,46 +169,53 @@ QPP.Semaphore = (function() {
 		var that = this;
 
 		var deferred = Q.defer();
+		// https://github.com/gotwarlost/istanbul/blob/master/ignoring-code-for-coverage.md
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[Semaphore:%s:wait] this.resourcesNo:%d", this.name, this.resourcesNo);
 
 		this.resourcesNo--;
 		// enough available resources
 		if(this.resourcesNo>=0){
+			var consumerId = that.consumerUniqueId++;
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[Semaphore:%s:wait] available", this.name);
 
 			if(this.supportConsumersLog){
 				this.consumersLog.push({
-					consumerId: this.consumerUniqueId++,
+					consumerId: consumerId,
 					consumerName: consumerName
 				});
 			}
-			deferred.resolve(this.resourcesNo, consumerId);
+			deferred.resolve({resourcesNo: this.resourcesNo, consumerId: consumerId});
 		// no enough available resources
 		}else{
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[Semaphore:%s:wait] not available", this.name);
 			var that = this;
 			if(this.supportConsumersLog){
-				var consumerId = this.consumerUniqueId++;
+				var consumerId = that.consumerUniqueId++;
 				this.waitingQueue.push({
 					func: function(){
+						/* istanbul ignore if  */
 						if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
 						that.consumersLog.push({
 							consumerId: consumerId,
 							consumerName: consumerName
 						});
-						deferred.resolve(that.resourcesNo);
+						deferred.resolve({resourcesNo: that.resourcesNo, consumerId: consumerId});
 					},
 					consumerId: consumerId,
-					consumerName: consumerName					
-				});				
+					consumerName: consumerName
+				});
 
 			}else{
 				this.waitingQueue.push(function(){
+					/* istanbul ignore if  */
 					if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
 					deferred.resolve(that.resourcesNo);
-				});				
+				});
 			}
-		}			
+		}
 		return deferred.promise;
 	};
 
@@ -233,6 +241,7 @@ QPP.Semaphore = (function() {
 	@param {(number(int)|string)} [consumerIdName] - consumer name (string) or consumer id (integer)
 	*/
 	Semaphore.prototype.signal = function(consumerIdName){
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[Semaphore:%s:signal] this.resourcesNo:%d", this.name, this.resourcesNo);
 		this.resourcesNo++;
 
@@ -243,7 +252,8 @@ QPP.Semaphore = (function() {
 			if(typeof consumerIdName === 'string') consumerName = consumerIdName;
 			else if(typeof consumerIdName === 'number') consumerId = consumerIdName;
 			else if(typeof consumerIdName === 'undefined'){
-				console.error("[Semaphore:%s:signal] if consumer logging is enabled then consumerIdName should be provided");
+				var msg = "[Semaphore:%s:signal] consumerIdName should be provided when consumer logging is enabled";
+				throw new Error(msg);
 			}
 
 			for(var i=0; i<this.consumersLog.length; i++){
@@ -254,12 +264,11 @@ QPP.Semaphore = (function() {
 					this.consumersLog.splice(i, 1);
 				}
 			}
-		}else{
-
 		}
 
 		// someone is waiting for available resources
 		if(this.waitingQueue.length>0){
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[Semaphore:%s:signal] %d consumers waiting in the queue", this.name, this.waitingQueue.length);
 			if(this.supportConsumersLog){
 				var elem = this.waitingQueue.shift();
@@ -269,6 +278,7 @@ QPP.Semaphore = (function() {
 				func();
 			}
 		}else{
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[Semaphore:%s:signal] no consumers waiting in the queue", this.name);
 		}
 	}
@@ -286,12 +296,12 @@ QPP.SemaphoreMultiReservation = (function() {
 	@classdesc This is a class that provides promises enabled semaphores.
 	It differs from the class Semaphore (@see {@link qpp.Semaphore} ) in a way
 	it supports allocation of more than one resource in one wait() call
-	
+
 	@example
 	// Example of 3 groups
 	var QPP = require('qpp');
 	var s = new QPP.SemaphoreMultiReservation('Nebojsa tower', 5);
-	
+
 	// group 1
 	setTimeout(function(){
 		s.wait(3) // 3 people
@@ -303,7 +313,7 @@ QPP.SemaphoreMultiReservation = (function() {
 			}, parseInt(Math.random()*1500)+1);
 		});
 	}, parseInt(Math.random()*100)+1);
-	
+
 	// group 2
 	setTimeout(function(){
 		s.wait(4) // 4 people
@@ -315,7 +325,7 @@ QPP.SemaphoreMultiReservation = (function() {
 			}, parseInt(Math.random()*500)+1);
 		});
 	}, parseInt(Math.random()*100)+1);
-	
+
 	// group 3
 	setTimeout(function(){
 		s.wait(2) // 2 people
@@ -327,7 +337,7 @@ QPP.SemaphoreMultiReservation = (function() {
 			}, parseInt(Math.random()*100)+1);
 		});
 	}, parseInt(Math.random()*100)+1);
-	
+
 	// This is the most interesting scenario:
 	//		Group 2: Tower is available for us
 	//		Group 2: Let's give the space for others
@@ -337,8 +347,8 @@ QPP.SemaphoreMultiReservation = (function() {
 	//		Group 1: Great experience, but they ask us to leave!
 	// Because both group 1 and 3 ended up at the top of the towe simultaneously
 	// (there were enough of resources to allocate for both (2+3<=5))
-	// 
-	// For more examples, please check unit tests for @see qpp.mapBandwidth	
+	//
+	// For more examples, please check unit tests for @see qpp.mapBandwidth
 
 	@memberof qpp
 	@exports qpp.Semaphore
@@ -383,13 +393,13 @@ QPP.SemaphoreMultiReservation = (function() {
 		var wP1 = s.wait(1); // fine, 2 resources left available
 		var wP2 = s.wait(3); // not fine (consumer 1 has to release)
 		// wP3 will be fine and resolved if {@link this.waitForMoreDemandingConsumers} === false
-		// or not fine and not resolved until consumer 1's resources are released (signaled) 
+		// or not fine and not resolved until consumer 1's resources are released (signaled)
 		// if {@link this.waitForMoreDemandingConsumers} === true (default)
 		var wP3 = s.wait(2);
 		*/
 		this.waitForMoreDemandingConsumers = typeof waitForMoreDemandingConsumers !== 'undefined' ? waitForMoreDemandingConsumers : true;
 
-		/** 
+		/**
 		@memberof! qpp.SemaphoreMultiReservation#
 		@var {boolean} debug - defines if debugging messages should be shown during Semaphore operations
 		*/
@@ -408,20 +418,25 @@ QPP.SemaphoreMultiReservation = (function() {
 	SemaphoreMultiReservation.prototype.wait = function(resourcesNoNeeded){
 		var deferred = Q.defer();
 		resourcesNoNeeded = resourcesNoNeeded || 1;
-		if(resourcesNoNeeded > this.initialResources) deferred.reject(new Error("Not possible to allocate more resources than were initially available"));
-		else{
+		if(resourcesNoNeeded > this.initialResources){
+			deferred.reject(new Error("Not possible to allocate more resources than were initially available"));
+		}else{
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[SemaphoreMultiReservation:%s:wait] this.resourcesNo:%d, resourcesNoNeeded:%d", this.name, this.resourcesNo, resourcesNoNeeded);
 			// enough available resources and (no one is waiting on semaphore or it is allowed to get resources before)
 			if((this.resourcesNo >= resourcesNoNeeded) && (this.waitingQueue.length <= 0 || !this.waitForMoreDemandingConsumers)){
 				this.resourcesNo -= resourcesNoNeeded; // allocation
+				/* istanbul ignore if  */
 				if(this.debug) console.log("[SemaphoreMultiReservation:%s:wait] available", this.name);
 				deferred.resolve(this.resourcesNo);
 			// no enough available resources
 			}else{
+				/* istanbul ignore if  */
 				if(this.debug) console.log("[SemaphoreMultiReservation:%s:wait] not available", this.name);
 				var that = this;
 				this.waitingQueue.push({
 					func: function(){
+						/* istanbul ignore if  */
 						if(that.debug) console.log("[Semaphore:%s:wait:callback] became available", that.name);
 						deferred.resolve(that.resourcesNo);
 					},
@@ -456,24 +471,29 @@ QPP.SemaphoreMultiReservation = (function() {
 
 	SemaphoreMultiReservation.prototype.signal = function(resourcesReleased){
 		resourcesReleased = resourcesReleased || 1;
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[SemaphoreMultiReservation:%s:signal] this.resourcesNo:%d, resourcesReleased:%d", this.name, this.resourcesNo, resourcesReleased);
 		this.resourcesNo += resourcesReleased;
 		// someone is waiting for available resources
 		if(this.waitingQueue.length>0){
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[SemaphoreMultiReservation:%s:signal] %d consumers waiting in the queue", this.name, this.waitingQueue.length);
 			do{
 				var qEl = this.waitingQueue[0];
 				if(this.resourcesNo >= qEl.rNo){
+					/* istanbul ignore if  */
 					if(this.debug) console.log("[SemaphoreMultiReservation:%s:signal] releasing a consumer");
 					this.waitingQueue.shift();
 					this.resourcesNo -= qEl.rNo; // allocating
 					qEl.func();
 				}else{
+					/* istanbul ignore if  */
 					if(this.debug) console.log("[SemaphoreMultiReservation:%s:signal] consumer needs too much resources (needed %d out of %s available)", this.name, qEl.rNo, this.resourcesNo);
 					break;
 				}
 			}while(this.waitingQueue.length>0);
 		}else{
+			/* istanbul ignore if  */
 			if(this.debug) console.log("[SemaphoreMultiReservation:%s:signal] no consumers waiting in the queue", this.name);
 		}
 	}
@@ -489,9 +509,9 @@ QPP.SemaphoresHash = (function() {
 	Constructor function. Creates a new SemaphoresHash with optional and resources number
 
 	@classdesc This is a class that provides promises enabled SemaphoresHashes.
-	It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available, 
+	It is possible to create a SemaphoresHash with a name and speciffic number of resources that we can wait for to get available,
 	and release them when we do not need them anymore
-	
+
 	@example
 	// Example of two consumers
 	var QPP = require('./..');
@@ -526,7 +546,7 @@ QPP.SemaphoresHash = (function() {
 		*/
 		this.initialResources = resourcesNo;
 
-		/** 
+		/**
 		@memberof! qpp.SemaphoresHash#
 		@var {boolean} debug - defines if debugging messages should be shown during SemaphoresHash operations
 		*/
@@ -545,6 +565,7 @@ QPP.SemaphoresHash = (function() {
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[SemaphoresHash.prototype.create] name:%s", name);
 		return semaphore;
 	};
@@ -563,6 +584,7 @@ QPP.SemaphoresHash = (function() {
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[SemaphoresHash.wait] name:%s", name);
 		return semaphore.wait();
 	};
@@ -574,10 +596,11 @@ QPP.SemaphoresHash = (function() {
 	*/
 	SemaphoresHash.prototype.signal = function(name){
 		if(!(name in this.semaphores)){
-			var semaphore = this.semaphores[name] = new QPP.Semaphore(name, this.initialResources);
+			throw new Error("Semaphore is not created");
 		}else{
 			var semaphore = this.semaphores[name];
 		}
+		/* istanbul ignore if  */
 		if(this.debug) console.log("[SemaphoresHash.signal] name:%s", name);
 		return semaphore.signal();
 	}
@@ -640,7 +663,7 @@ promise.then(function(processedNo){
 @param {Object} options - Parameters
 @param {string} options.name - the name of the iterator
 @param {Array.<*>} options.processingData - an array that has to be processed. For each element of array the options.processingFunction will be invited to process it
-@param {processingFunctionCallback} options.processingFunction - function that is called for processing data 
+@param {processingFunctionCallback} options.processingFunction - function that is called for processing data
 @param {Object} [options.thisObj] - the object/context in which processing function will be called
 @param {Array.<*>} [options.processingArguments] - arguments that will be passed to the options.processingFunction in addition to element to process and few other maintance parameters
 @param {number(integer)} options.limitConcurrentlyNum - the number of concurrently processing array elements (calls to the options.processingFunction)
@@ -687,7 +710,7 @@ QPP.mapBandwidth = function(options, iterator){
 	};
 
 	var addProcessingFunctions = function(){
-		while(iterator.processingIterator < iterator.processingData.length 
+		while(iterator.processingIterator < iterator.processingData.length
 		&& iterator.processingCurrentNo < iterator.limitConcurrentlyNum){
 			iterator.processingCurrentNo++;
 
@@ -696,14 +719,15 @@ QPP.mapBandwidth = function(options, iterator){
 				// http://stackoverflow.com/questions/1374126/how-to-extend-an-existing-javascript-array-with-another-array
 				procArguments.push.apply(procArguments, options.processingArguments);
 				procArguments.push(processingFunctionFinished);
+				/* istanbul ignore if  */
 				if(iterator.debug) console.log("[MapBandwidth:"+iterator.name+"] iterator.processingIterator: %d, procArguments:%s", iterator.processingIterator, JSON.stringify(procArguments));
 
 				var promise = iterator.processingFunction.apply(iterator.thisObj || this, procArguments);
 			}else{
 				if(iterator.thisObj){
-					var promise = iterator.processingFunction.call(iterator.thisObj, iterator.processingData[iterator.processingIterator], iterator.processingIterator, processingFunctionFinished);									
+					var promise = iterator.processingFunction.call(iterator.thisObj, iterator.processingData[iterator.processingIterator], iterator.processingIterator, processingFunctionFinished);
 				}else{
-					var promise = iterator.processingFunction(iterator.processingData[iterator.processingIterator], iterator.processingIterator, processingFunctionFinished);									
+					var promise = iterator.processingFunction(iterator.processingData[iterator.processingIterator], iterator.processingIterator, processingFunctionFinished);
 				}
 			}
 
@@ -715,7 +739,7 @@ QPP.mapBandwidth = function(options, iterator){
 				promise.done();
 			}
 		}
-		if(iterator.processingCurrentNo == 0) deferred.resolve(iterator.processingData.length);			
+		if(iterator.processingCurrentNo == 0) deferred.resolve(iterator.processingData.length);
 	}
 
 	addProcessingFunctions();
@@ -723,21 +747,23 @@ QPP.mapBandwidth = function(options, iterator){
 	return iterator;
 };
 
-QPP.mapBandwidthDataList = function(processingFunction, processingData){
-
-};
-
-QPP.mapBandwidthArgumentsList = function(processingFunction, processingData){
-
-};
+// QPP.mapBandwidthDataList = function(processingFunction, processingData){
+//
+// };
+//
+// QPP.mapBandwidthArgumentsList = function(processingFunction, processingData){
+//
+// };
 
 // node.js world
 if(typeof module !== 'undefined'){
 	module.exports = (function() {
 		return QPP;
-	})();	
+	})();
 }
-if(typeof window != 'undefined'){
+
+/* istanbul ignore if  */
+if(typeof window !== 'undefined'){
 	window.QPP = QPP;
 }
 

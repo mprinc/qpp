@@ -39,7 +39,10 @@ describe('SemaphoresHash: ', function() {
 			expect(s).to.have.property('semaphores');
 			expect(s.semaphores).to.deep.equal({});
 
+			expect(s.semaphores).to.not.have.property('test');
 			s.create('test');
+			expect(s.semaphores).to.have.property('test');
+			s.create('test'); // it should be idempotent
 			expect(s.semaphores).to.have.property('test');
 			expect(s.semaphores['test'].resourcesNo).to.equal(3);
 		});
@@ -54,6 +57,12 @@ describe('SemaphoresHash: ', function() {
 			expect(s.semaphores['test'].resourcesNo).to.equal(-1);
 		});
 
+		it('it should not be possible to signal on previouselly not created semaphore', function() {
+			var s = new QPP.SemaphoresHash();
+			// http://stackoverflow.com/questions/21587122/mocha-chai-expect-to-throw-not-catching-thrown-errors
+			expect(s.signal.bind(s, 'test')).to.throw("Semaphore is not created")
+		});
+
 		it('it should be possible to signal on semaphoresHash (check s.resourcesNo)', function() {
 			var s = new QPP.SemaphoresHash();
 			s.create('test');
@@ -62,7 +71,7 @@ describe('SemaphoresHash: ', function() {
 			expect(s.semaphores['test'].resourcesNo).to.equal(0);
 
 			var wP = s.wait('test');
-			var wPreturn1 = 
+			var wPreturn1 =
 			wP.then(function(resourcesNo){
 				expect(s.semaphores['test'].resourcesNo).to.equal(0);
 			}).done();
@@ -88,7 +97,7 @@ describe('SemaphoresHash: ', function() {
 			expect(s.semaphores['test2'].resourcesNo).to.equal(0);
 
 			var wP = s.wait('test1');
-			var wPreturn1 = 
+			var wPreturn1 =
 			wP.then(function(resourcesNo){
 				expect(s.semaphores['test1'].resourcesNo).to.equal(0);
 			}).done();
@@ -117,7 +126,7 @@ describe('SemaphoresHash: ', function() {
 		});
 
 		it('it should be possible to wait and signal from multiple callbacks', function() {
-			var s = new QPP.SemaphoresHash();
+			var s = new QPP.SemaphoresHash(1, false);
 			task1Promise = s.wait('test');
 			task1Promise.then(function(){
 				setTimeout(function(){

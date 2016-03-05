@@ -52,7 +52,7 @@ describe('Semaphore: ', function() {
 			expect(s.resourcesNo).to.equal(0);
 
 			var wP = s.wait();
-			var wPreturn1 = 
+			var wPreturn1 =
 			wP.then(function(resourcesNo){
 				expect(resourcesNo).to.equal(0);
 			}).done();
@@ -102,6 +102,19 @@ describe('Semaphore: ', function() {
 			task4Promise = s.wait();
 
 			return Q.all([task1Promise, task2Promise, task3Promise, task4Promise]);
+		});
+
+		it('it should be possible to signal with different consumerId', function() {
+			var s = new QPP.Semaphore('test', 1, false, true);
+			s.wait("task1");
+			s.signal("task1");
+			var wP = s.wait().then(function(r){
+				// console.log("consumerId: ", r);
+				s.signal(r.consumerId);
+			});
+			expect(s.signal.bind(s)).to.throw("[Semaphore:%s:signal] consumerIdName should be provided when consumer logging is enabled");
+
+			return wP;
 		});
 
 		it('it should be possible to wait and signal from multiple callbacks with consumersLog enabled', function() {

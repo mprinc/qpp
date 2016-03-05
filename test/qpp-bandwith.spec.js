@@ -100,6 +100,7 @@ describe('Qpp.mapBandwidth: ', function() {
 			options.processingData = [0, 1, 2, 3, 4, 5];
 			options.limitConcurrentlyNum = 10;
 			options.processingFunction = processingFunction;
+			options.thisObj = this;
 			iterator = QPP.mapBandwidth(options, iterator);
 			expect(iterator.processingCurrentNo).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));
 			expect(iterator.processingIterator).to.be.equal(Math.min(options.limitConcurrentlyNum, options.processingData.length));

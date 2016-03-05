@@ -1,17 +1,31 @@
+sudo: false
 language: node_js
+cache:
+  directories:
+    - node_modules
+notifications:
+  email: true
 node_js:
-  - "4.1"
-  - "4.0"
-  - "0.12"
-  - "0.11"
-  - "0.10"
+  - '4'
+  - iojs-v3
+  - iojs-v2
+  - iojs-v1
+  - '0.12'
+  - '0.10'
   - "iojs"
-
-# produce coverage lcov data
-script: "npm run-script test-travis"
-
-# Send coverage data to Coveralls
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
-
-# after_success:
-# - ./node_modules/.bin/mocha test/**.js -R mocha-lcov-reporter | ./node_modules/coveralls/bin/coveralls.js
+before_install:
+  - npm i -g npm@^2.0.0
+before_script:
+  - npm prune
+script:
+  - npm run test # do not allow releasing if test fails
+  - npm run check-coverage # do not allow releasing if coverege is under the limit
+after_success:
+  - 'curl -Lo travis_after_all.py https://git.io/travis_after_all'
+  - python travis_after_all.py
+  - 'export $(cat .to_export_back) &> /dev/null'
+  - "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  - npm run semantic-release
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"

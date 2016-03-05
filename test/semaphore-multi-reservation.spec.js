@@ -8,6 +8,11 @@ var should = chai.should();
 var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
+var sinon = require("sinon");
+// http://chaijs.com/plugins/sinon-chai
+var sinonChai = require("sinon-chai");
+chai.use(sinonChai);
+
 // var assert = require('chai').assert;
 
 // testing:
@@ -36,7 +41,7 @@ describe('SemaphoreMultiReservation: ', function() {
 		});
 
 		it('it should not be possible to wait for more resources on semaphore than initially available', function() {
-			var s = new QPP.SemaphoreMultiReservation('test', 3);
+			var s = new QPP.SemaphoreMultiReservation('test', 3, true, false);
 			expect(s.resourcesNo).to.equal(3);
 			var wP = s.wait(5);
 			// wP.done();
@@ -68,7 +73,7 @@ describe('SemaphoreMultiReservation: ', function() {
 			expect(s.resourcesNo).to.equal(0);
 
 			var wP = s.wait();
-			var wPreturn1 = 
+			var wPreturn1 =
 			wP.then(function(resourcesNo){
 				expect(resourcesNo).to.equal(0);
 			}).done();
@@ -121,12 +126,14 @@ describe('SemaphoreMultiReservation: ', function() {
 		});
 
 		it('it should be possible to wait on semaphore for more resources', function() {
+			var deferred = Q.defer();
+
 			var s = new QPP.SemaphoreMultiReservation('test', 3);
 			expect(s.resourcesNo).to.equal(3);
 			s.wait(2);
 			expect(s.resourcesNo).to.equal(1);
 
-			var wP = s.wait(3);
+			s.wait(3);
 			expect(s.resourcesNo).to.equal(1);
 		});
 
@@ -138,7 +145,7 @@ describe('SemaphoreMultiReservation: ', function() {
 
 			var wP = s.wait(3);
 			var wDreturn2 = Q.defer();
-			var wPreturn1 = 
+			var wPreturn1 =
 			wP.then(function(resourcesNo){
 				expect(resourcesNo).to.equal(0);
 				setTimeout(function(){
